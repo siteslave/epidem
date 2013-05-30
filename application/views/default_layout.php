@@ -67,7 +67,7 @@
                         <li class="nav-header">MAIN SERVICES</li>
                         <li><a href="<?=site_url('patient')?>"><i class="icon-th-list"></i> ทะเบียนผู้ป่วย</a></li>
                         <li><a href="<?=site_url('patient/register');?>"><i class="icon-plus-sign-alt"></i> ลงทะเบียนรายใหม่</a></li>
-                        <li><a href="#"><a href="<?=site_url('imports/upload')?>"><i class="icon-upload-alt"></i> อัปโหลดไฟล์</a></li>
+                        <li><a href="<?=site_url('imports/upload')?>"><i class="icon-upload-alt"></i> อัปโหลดไฟล์</a></li>
                         <li class="divider"></li>
                         <li class="nav-header">Nav header</li>
                         <li><a href="#">Separated link</a></li>
