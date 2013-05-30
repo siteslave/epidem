@@ -78,7 +78,7 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-print"></i> รายงาน <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li class="nav-header">Nav header</li>
-                        <li><a href="#">Action</a></li>
+                        <li><a href="<?=site_url('reports/e0')?>"><i class="icon-th-list"></i> E0</a></li>
                         <li><a href="#">Another action</a></li>
                         <li><a href="#">Something else here</a></li>
                         <li class="divider"></li>

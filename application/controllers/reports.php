@@ -12,5 +12,9 @@ class Reports extends CI_Controller {
     {
         $this->layout->view('reports/index_view');
     }
+    public function e0()
+    {
+        $this->layout->view('reports/e0_view');
+    }
 
 }
