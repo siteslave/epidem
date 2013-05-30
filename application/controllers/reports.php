@@ -8,9 +8,6 @@
  */
 class Reports extends CI_Controller {
 
-    /**
-     * Index controller
-     */
     public function index()
     {
         $this->layout->view('reports/index_view');
