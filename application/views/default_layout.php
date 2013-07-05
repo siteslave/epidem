@@ -7,11 +7,11 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>
-
-        EPIDEM Online
-
-    </title>
+    <title> EPIDEM Online </title>
+    
+    <script type="text/javascript" charset="utf-8">
+    var site_url = '<?=site_url()?>';
+    </script>
 
     <!-- Bootstrap core CSS -->
     <link href="<?=base_url()?>assets/css/bootstrap.css" rel="stylesheet">
@@ -33,6 +33,22 @@
 
     <script src="<?=base_url()?>assets/js/jquery.js"></script>
     <script src="<?=base_url()?>assets/js/bootstrap.min.js"></script>
+    <!-- load library -->
+    <script src="<?=base_url()?>assets/js/underscore.min.js"></script>
+    <script src="<?=base_url()?>assets/js/highcharts.js"></script>
+    <script src="<?=base_url()?>assets/js/highcharts-more.js"></script>
+    <script src="<?=base_url()?>assets/js/jquery.blockUI.js"></script>
+    <script src="<?=base_url()?>assets/js/jquery.cookie.min.js"></script>
+    <script src="<?=base_url()?>assets/js/jquery.freeow.min.js"></script>
+    <script src="<?=base_url()?>assets/js/jquery.maskedinput.min.js"></script>
+    <script src="<?=base_url()?>assets/js/jquery.numeric.js"></script>
+    <script src="<?=base_url()?>assets/js/jquery.paging.min.js"></script>
+    <script src="<?=base_url()?>assets/js/numeral.min.js"></script>
+    <script src="<?=base_url()?>assets/js/taffy.js"></script>
+    <script src="<?=base_url()?>assets/js/typeahead.js"></script>
+    
+    <!-- load application -->
+    <script src="<?=base_url()?>assets/apps/js/apps.js"></script>
 </head>
 <body>
 
@@ -48,7 +64,7 @@
 
 </style>
 
-
+<div id="freeow" class="freeow freeow-bottom-right"></div>
 <!-- Fixed navbar -->
 <div class="navbar navbar-fixed-top">
     <div class="container">
@@ -65,13 +81,21 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-print"></i> บริการหลัก <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li class="nav-header">MAIN SERVICES</li>
-                        <li><a href="<?=site_url('patient')?>"><i class="icon-th-list"></i> ทะเบียนผู้ป่วย</a></li>
-                        <li><a href="<?=site_url('patient/register');?>"><i class="icon-plus-sign-alt"></i> ลงทะเบียนรายใหม่</a></li>
+                        <li><a href="<?=site_url('patients')?>"><i class="icon-th-list"></i> ทะเบียนผู้ป่วย</a></li>
+                        <li><a href="<?=site_url('patients/register');?>"><i class="icon-plus-sign-alt"></i> ลงทะเบียนรายใหม่</a></li>
                         <li><a href="<?=site_url('imports/upload')?>"><i class="icon-upload-alt"></i> อัปโหลดไฟล์</a></li>
                         <li class="divider"></li>
                         <li class="nav-header">Nav header</li>
                         <li><a href="#">Separated link</a></li>
                         <li><a href="#">One more separated link</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-cogs"></i> เครื่องมือ <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li class="nav-header">TOOLS</li>
+                        <li><a href="<?=site_url('patients/imports')?>"><i class="icon-refresh"></i> นำเข้าผู้ป่วยจาก 43 แฟ้ม</a></li>
+
                     </ul>
                 </li>
                 <li class="dropdown">
@@ -102,7 +126,6 @@
                     </ul>
                 </li>
             </ul>
-<!--            <p class="navbar-text pull-right">Signed in as <a href="#" class="navbar-link">รพ.สต.นาสีนวน</a></p>-->
 
         </div>
     </div>

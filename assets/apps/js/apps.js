@@ -3,12 +3,6 @@
  */
 
 var app = {
-    showLoginLoading: function(){
-        $('#divLoading').css('display', 'inline');
-    },
-    hideLoginLoading: function(){
-        $('#divLoading').css('display', 'none');
-    },
     show_loading: function(){
         $.blockUI({
             css: {
@@ -45,56 +39,16 @@ var app = {
         $(obj).unblock();
     },
 
-    showImageLoading: function(){
-        $('#imgLoading').css('display', 'inline');
-    },
 
-    hideImageLoading: function(){
-        $('#imgLoading').css('display', 'none');
-    },
-
-    dbpop_to_thai_date: function(d){
-        if(!d){
-            return '';
-        }else{
-            var old_date = d.toString();
-
-            var year = old_date.substr(0, 4).toString(),
-                month = old_date.substr(4, 2).toString(),
-                day = old_date.substr(6, 2).toString();
-
-            var new_date = day + '/' + month + '/' + year;
-
-            return new_date;
-        }
-
-    },
-    /** mongo date to thai date **/
-    mongo_to_thai_date: function(d){
-        if(!d){
-            return '';
-        }else{
-            var old_date = d.toString();
-
-            var year = parseInt(old_date.substr(0, 4).toString()) + 543,
-                month = old_date.substr(4, 2).toString(),
-                day = old_date.substr(6, 2).toString();
-
-            var new_date = day + '/' + month + '/' + year;
-
-            return new_date;
-        }
-
-    },
-    to_thai_date: function(d){
+    mysql_to_thai_date: function(d){
         if(!d){
             return '-';
         }else{
-            var date = d.split('/');
+            var date = d.split('-');
 
-            var dd = date[0],
+            var dd = date[2],
                 mm = date[1],
-                yyyy = parseInt(date[2]) + 543;
+                yyyy = parseInt(date[0]) + 543;
 
             return dd + '/' + mm + '/' + yyyy;
         }
@@ -104,8 +58,8 @@ var app = {
         if(!d){
             return 0;
         }else{
-            var d = d.split('/');
-            var year_birth = d[2];
+            var d = d.split('-');
+            var year_birth = d[0];
             var year_current = new Date();
             var year_current2 = year_current.getFullYear();
 
@@ -113,23 +67,6 @@ var app = {
 
             return age;
         }
-    },
-
-    getFileExtension: function(filename)
-    {
-        var ext = /^.+\.([^.]+)$/.exec(filename);
-        return ext == null ? "" : ext[1];
-    },
-    getReadableFileSizeString: function(fileSizeInBytes) {
-
-        var i = -1;
-        var byteUnits = [' kB', ' MB', ' GB', ' TB', 'PB', 'EB', 'ZB', 'YB'];
-        do {
-            fileSizeInBytes = fileSizeInBytes / 1024;
-            i++;
-        } while (fileSizeInBytes > 1024);
-
-        return Math.max(fileSizeInBytes, 0.1).toFixed(1) + byteUnits[i];
     },
 
     go_to_url: function(url){
@@ -217,6 +154,16 @@ var app = {
     clear_null: function(v)
     {
         return v == null ? '-' : v;
+    },
+    
+    set_cookie: function(k, v) 
+    {
+        $.cookie(k, v);
+    },
+    
+    get_cookie: function(k)
+    {
+        $.cookie(k);
     }
 };
 //Record pre page
@@ -224,7 +171,7 @@ app.record_per_page = 25;
 
 app.set_runtime = function()
 {
-
+    $('input[data-type="date"]').mask("99/99/9999");
     $('input[data-type="time"]').mask("99:99");
     $('input[data-type="year"]').mask("9999");
     $('input[data-type="number"]').numeric();
@@ -234,15 +181,6 @@ app.set_runtime = function()
     $('[rel="tooltip"]').tooltip();
 };
 
-$(function(){
+$(function() {
     app.set_runtime();
-
-/*    app.get_providers = function(cb){
-        var url = 'basic/get_providers',
-            params = {};
-
-        app.ajax(url, params, function(err, data){
-            err ? cb(err) : cb(null, data);
-        });
-    };*/
 });

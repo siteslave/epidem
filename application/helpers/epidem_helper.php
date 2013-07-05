@@ -25,156 +25,41 @@ if ( ! function_exists('get_current_thai_date'))
 
 }
 
-
-/**
- * Get user agent
- *
- * @return string User agent
- **/
-if ( ! function_exists( 'get_user_agent' ) )
-{
-    function get_user_agent()
-    {
-        $ci =& get_instance();
-        if ( $ci->agent->is_browser() )
-        {
-            $agent = $ci->agent->browser() . ' ' . $ci->agent->version() . ' ' . $ci->agent->platform();
-        }
-        elseif( $ci->agent->is_robot() )
-        {
-            $agent = $ci->agent->robot();
-        }
-        elseif( $ci->agent->is_mobile() )
-        {
-            $agent = $this->agent->mobile();
-        }
-        else
-        {
-            $agent = 'Unknow agent';
-        }
-
-        return $agent;
-    }
-}
-
-/**
- * Create logging
- *
- * @param string $log_level Log level 'info', 'warning', 'error'
- * @param string $log_message
- * @param string $log_ip User ip address
- * @param string $log_agent User agent
- **/
-if ( ! function_exists( 'logging' ) )
-{
-    function logging( $logs )
-    {
-        $ci =& get_instance();
-
-        date_default_timezone_set('Asia/Bangkok');
-
-        $logs['log_date'] = date("Y-m-d");
-        $logs['log_time'] = date("H:i:s");
-        $logs['log_user'] = $ci->session->userdata('user_name');
-
-        $ci->db->insert( 'logs', $logs );
-    }
-}
 /**
  * Generate serial
  *
- * @param   string  $sr_type Type of serial
- * @param   boolean $gen_date Add 2 digits of year to serial
+ * @param   string  $t Type of serial
  * @return  string
  */
 if ( ! function_exists('generate_serial'))
 {
-    function generate_serial($sr_type)
+    function generate_serial($t, $pcucode)
     {
         $ci =& get_instance();
         $ci->load->model('Serial_model', 'serial');
-        //Generate serial with year and month digit.
 
-        $prefix = $ci->serial->get_prefix($sr_type);
-        $gen_date = $ci->serial->get_gen_date($sr_type);
+        $ci->serial->pcucode = $pcucode;
 
-        //generate with year and month
-        if($gen_date){
-            //formatted serial
-            $sr_m = $ci->serial->get_month_prefix($sr_type);
-            $sr_y = $ci->serial->get_year_prefix($sr_type);
+        //check serial exist
+        $serial_exist = $ci->serial->serial_exist($t);
 
-            //for month prefix
-            if($sr_m != date('m')){
-                //update month
-                $ci->serial->update_month($sr_type, date('m'));
-                //set to current month
-                $sr_m = date('m');
-                $ci->serial->reset_serial($sr_type);
-            }
-
-            //for year prefix
-            $current_year = date('Y') + 543;
-            $short_year = substr($current_year, -2) ;
-
-            if($sr_y != $short_year){
-                //update year
-                $ci->serial->update_year($sr_type, $short_year);
-				$ci->serial->reset_serial($sr_type);
-            }
-
-            $new_sr = $prefix.'-'.$short_year.$sr_m;
-
-        }else{//generate without year and month
-            $new_sr = $prefix;
+        if(!$serial_exist)
+        {
+            //create serial
+            $ci->serial->create_serial($t);
         }
 
-        $sn = $ci->serial->get_serial($sr_type);
-        $sn = get_string_length($sn);
+        //get current serial
+        $current_number = $ci->serial->get_serial($t);
+        $serial_number = $current_number;
 
-        $a = $new_sr. '-' .$sn;
+        //update serial
+        $ci->serial->update_serial($t);
 
-        //Update serials
-        $ci->serial->update_serial($sr_type);
-
-        return $a;
+        return $serial_number;
     }
 }
-//private function for serial
-function get_string_length($sn){
 
-    switch(strlen($sn)){
-        case 1:
-            $new_sn = '00000'.$sn;
-            break;
-        case 2:
-            $new_sn = '0000'.$sn;
-            break;
-        case 3:
-            $new_sn = '000'.$sn;
-            break;
-        case 4:
-            $new_sn = '00'.$sn;
-            break;
-        case 5:
-            $new_sn = '0'.$sn;
-            break;
-        case 6:
-            $new_sn = $sn;
-            break;
-        default:
-            $new_sn = '000001';
-    }
-    return $new_sn;
-}
-
-if( !function_exists('gen_unique')){
-    function gen_unique(){
-        $id = uniqid(hash("sha512",rand()), TRUE);
-        $code = hash("sha512", $id);
-        return substr($code, 0, 32);
-    }
-}
 
 if(!function_exists('to_thai_date')){
     function to_thai_date($eng_date){

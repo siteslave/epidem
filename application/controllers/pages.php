@@ -3,7 +3,7 @@
 class Pages extends CI_Controller {
 
 	/**
-     * Index controller
+	* Index controller
 	 */
 	public function index()
 	{

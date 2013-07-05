@@ -11,16 +11,17 @@
 class Imports extends CI_Controller {
 
 	/**
-     * Index controller
-	 */
-	public function index()
-	{
-		$this->layout->view('imports/index_view');
-	}
+	* Index controller
+	*/
+    public function index()
+    {
+	$this->layout->view('imports/index_view');
+    }
 
     /**
      * Upload view
      */
+    
     public function upload()
     {
         $this->layout->view('imports/upload_view');
