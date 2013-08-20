@@ -11,12 +11,18 @@
     
     <script type="text/javascript" charset="utf-8">
     var site_url = '<?=site_url()?>';
+    var base_url = '<?=base_url()?>';
+
+    var csrf_token = '<?php echo $this->security->get_csrf_hash(); ?>';
+    var user_level = '<?php echo $this->session->userdata("user_level"); ?>';
     </script>
 
     <!-- Bootstrap core CSS -->
     <link href="<?=base_url()?>assets/css/bootstrap.css" rel="stylesheet">
-    <link href="<?=base_url()?>assets/css/font-awesome.min.css" rel="stylesheet">
-    <link href="<?=base_url()?>assets/css/font-awesome-ie7.min.css" rel="stylesheet">
+    <link href="<?=base_url()?>assets/css/flags.css" rel="stylesheet">
+    <link href="<?=base_url()?>assets/css/bootstrap-glyphicons.css" rel="stylesheet">
+    <link href="<?=base_url()?>assets/css/freeow/freeow.css" rel="stylesheet">
+    <link href="<?=base_url()?>assets/apps/css/app.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -33,10 +39,9 @@
 
     <script src="<?=base_url()?>assets/js/jquery.js"></script>
     <script src="<?=base_url()?>assets/js/bootstrap.min.js"></script>
+    <script src="<?=base_url()?>assets/heighcharts/js/highcharts.js"></script>
     <!-- load library -->
     <script src="<?=base_url()?>assets/js/underscore.min.js"></script>
-    <script src="<?=base_url()?>assets/js/highcharts.js"></script>
-    <script src="<?=base_url()?>assets/js/highcharts-more.js"></script>
     <script src="<?=base_url()?>assets/js/jquery.blockUI.js"></script>
     <script src="<?=base_url()?>assets/js/jquery.cookie.min.js"></script>
     <script src="<?=base_url()?>assets/js/jquery.freeow.min.js"></script>
@@ -44,11 +49,11 @@
     <script src="<?=base_url()?>assets/js/jquery.numeric.js"></script>
     <script src="<?=base_url()?>assets/js/jquery.paging.min.js"></script>
     <script src="<?=base_url()?>assets/js/numeral.min.js"></script>
-    <script src="<?=base_url()?>assets/js/taffy.js"></script>
-    <script src="<?=base_url()?>assets/js/typeahead.js"></script>
-    
+
+
     <!-- load application -->
     <script src="<?=base_url()?>assets/apps/js/apps.js"></script>
+    <script src="<?=base_url()?>assets/apps/js/apps.users.js" charset="utf-8"></script>
 </head>
 <body>
 
@@ -76,9 +81,9 @@
         <a class="navbar-brand" href="#">EPIDEM</a>
         <div class="nav-collapse collapse">
             <ul class="nav navbar-nav">
-                <li><a href="<?=site_url()?>"><i class="icon-home"></i> หน้าหลัก</a></li>
+                <li><a href="<?=site_url()?>"><i class="glyphicon glyphicon-home"></i> หน้าหลัก</a></li>
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-print"></i> บริการหลัก <b class="caret"></b></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-list"></i> บริการหลัก <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li class="nav-header">MAIN SERVICES</li>
                         <li><a href="<?=site_url('patients')?>"><i class="icon-th-list"></i> ทะเบียนผู้ป่วย</a></li>
@@ -91,40 +96,34 @@
                     </ul>
                 </li>
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-cogs"></i> เครื่องมือ <b class="caret"></b></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-cog"></i> เครื่องมือ <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li class="nav-header">TOOLS</li>
-                        <li><a href="<?=site_url('patients/imports')?>"><i class="icon-refresh"></i> นำเข้าผู้ป่วยจาก 43 แฟ้ม</a></li>
+                        <li><a href="<?=site_url('patients/imports')?>"><i class="glyphicon glyphicon-refresh"></i> นำเข้าผู้ป่วยจาก 43 แฟ้ม</a></li>
 
                     </ul>
                 </li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-print"></i> รายงาน <b class="caret"></b></a>
-                    <ul class="dropdown-menu">
-                        <li class="nav-header">Nav header</li>
-                        <li><a href="<?=site_url('reports/e0')?>"><i class="icon-th-list"></i> E0</a></li>
-                        <li><a href="#">Another action</a></li>
-                        <li><a href="#">Something else here</a></li>
-                        <li class="divider"></li>
-                        <li class="nav-header">Nav header</li>
-                        <li><a href="#">Separated link</a></li>
-                        <li><a href="#">One more separated link</a></li>
-                    </ul>
+                <li class="">
+                    <a href="<?=site_url('/reports')?>" class=""><i class="glyphicon glyphicon-print"></i> รายงาน </a>
+
                 </li>
             </ul>
 
             <ul class="nav navbar-nav pull-right">
-
+            <?php if($this->session->userdata('status')){?>
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-cogs"></i> เมนูส่วนตัว <b class="caret"></b></a>
-                    <ul class="dropdown-menu">
-                        <li class="nav-header">USER PROFILE</li>
-                        <li><a href="#"><i class="icon-group"></i> ข้อมูลส่วนตัว</a></li>
-                        <li><a href="#"><i class="icon-key"></i> เปลี่ยนรหัสผ่าน</a></li>
-                        <li class="divider"></li>
-                        <li><a href="#"><i class="icon-signout"></i> ออกจากระบบ</a></li>
-                    </ul>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-user"></i>สวัสดี <?=$this->session->userdata('user_name');?> <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li class="nav-header">USER PROFILE</li>
+                            <li><a href="<?=site_url('/users/user_profile')?>"><i class="glyphicon glyphicon-user"></i> ข้อมูลส่วนตัว</a></li>
+                            <li><a href="#"><i class="glyphicon glyphicon-lock"></i> เปลี่ยนรหัสผ่าน</a></li>
+                            <li class="divider"></li>
+                            <li><a href="#" id='btnDoLogout'><i class="glyphicon glyphicon-circle-arrow-right"></i> ออกจากระบบ</a></li>
+                        </ul>
                 </li>
+                    <?php }else{
+                echo "<li> <a href='".site_url('/users/login')."'><i class='glyphicon glyphicon-cog'></i> เข้าสู่ระบบ : Login </a></li>";
+            }?>
             </ul>
 
         </div>

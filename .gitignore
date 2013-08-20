@@ -17,3 +17,5 @@ system/*
 .buildpath
 .project
 .settings/
+*.sql
+*.json

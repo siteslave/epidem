@@ -1,9 +1,26 @@
-<?php
-/**
- * Created by JetBrains PhpStorm.
- * User: spiderman
- * Date: 30/5/2556
- * Time: 15:04 น.
- * To change this template use File | Settings | File Templates.
- */
-echo "Page E0";
+<ul class="breadcrumb">
+    <li><a href="<?=site_url()?>">หน้าหลัก </a></li>
+    <li><a href="<?=site_url()."/reports/"?>">รายงาน </a></li>
+    <li class="active"> รายงาน E0</li>
+</ul>
+
+<table class="table table-striped">
+    <thead>
+    <th>#</th>
+    <th>E0</th>
+    <th>E1</th>
+    <th>ชื่อโรค506</th>
+    <th>ชื่อสกุล</th>
+    <th>ที่อยู่</th>
+    <th>สถานะการรักษา</th>
+    <th>ICD10</th>
+    <th>วันพบผู้ป่วย</th>
+    <th>วันที่รับรักษา</th>
+    <th>ความทันเวลา</th>
+    </thead>
+    <tbody>
+    <tr>
+        <td colspan="11">...</td>
+    </tr>
+    </tbody>
+</table>

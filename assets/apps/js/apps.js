@@ -3,7 +3,7 @@
  */
 
 var app = {
-    show_loading: function(){
+    show_loading: function () {
         $.blockUI({
             css: {
                 border: 'none',
@@ -18,10 +18,10 @@ var app = {
         });
     },
 
-    hide_loading: function(){
+    hide_loading: function () {
         $.unblockUI();
     },
-    show_block: function(obj){
+    show_block: function (obj) {
         $(obj).block({
             css: {
                 border: 'none',
@@ -35,15 +35,15 @@ var app = {
             message: '<h4><img src="' + base_url + 'assets/apps/img/ajax-loader-fb.gif" alt="loading."> Loading...</h4>'
         });
     },
-    hide_block: function(obj){
+    hide_block: function (obj) {
         $(obj).unblock();
     },
 
 
-    mysql_to_thai_date: function(d){
-        if(!d){
+    mysql_to_thai_date: function (d) {
+        if (!d) {
             return '-';
-        }else{
+        } else {
             var date = d.split('-');
 
             var dd = date[2],
@@ -54,10 +54,10 @@ var app = {
         }
     },
 
-    count_age: function(d){
-        if(!d){
+    count_age: function (d) {
+        if (!d) {
             return 0;
-        }else{
+        } else {
             var d = d.split('-');
             var year_birth = d[0];
             var year_current = new Date();
@@ -69,23 +69,23 @@ var app = {
         }
     },
 
-    go_to_url: function(url){
+    go_to_url: function (url) {
         location.href = site_url + url;
     },
     /**
-     * Ajax
-     *
-     * @param url
-     * @param params
-     * @param cb
-     */
-    ajax: function(url, params, cb){
+    * Ajax
+    *
+    * @param url
+    * @param params
+    * @param cb
+    */
+    ajax: function (url, params, cb) {
 
         params.csrf_token = csrf_token;
 
         app.show_loading();
 
-        try{
+        try {
             $.ajax({
                 url: site_url + url,
                 type: 'POST',
@@ -93,36 +93,36 @@ var app = {
 
                 data: params,
 
-                success: function(data){
-                    if(data.success){
+                success: function (data) {
+                    if (data.success) {
 
-                        if(data){
+                        if (data) {
                             cb(null, data);
-                        }else{
+                        } else {
                             cb('Record not found.', null);
                         }
 
                         app.hide_loading();
 
-                    }else{
+                    } else {
                         cb(data.msg, null);
                         app.hide_loading();
                     }
                 },
 
-                error: function(xhr, status){
+                error: function (xhr, status) {
                     cb('Error:  [' + xhr.status + '] ' + xhr.statusText, null);
                     app.hide_loading();
                 }
             });
-        }catch(err){
+        } catch (err) {
             cb(err, null);
         }
 
     },
 
-    alert: function(msg, title){
-        if(!title){
+    alert: function (msg, title) {
+        if (!title) {
             title = 'Messages';
         }
 
@@ -133,41 +133,54 @@ var app = {
             autoHide: true
         });
     },
-    set_first_selected: function(obj){
+
+    set_first_selected: function (obj) {
         $(obj).find('option').first().attr('selected', 'selected');
     },
 
-    trim: function(string){
+    trim: function (string) {
         return $.trim(string);
     },
-    add_commars: function(str){
+
+    add_commars: function (str) {
         var my_number = numeral(str).format('0,0.00');
 
         return my_number;
     },
-    add_commars_with_out_decimal: function(str){
+
+    add_commars_with_out_decimal: function (str) {
         var my_number = numeral(str).format('0,0');
 
         return my_number;
     },
 
-    clear_null: function(v)
-    {
+    clear_null: function (v) {
         return v == null ? '-' : v;
     },
-    
-    set_cookie: function(k, v) 
-    {
+
+    set_cookie: function (k, v) {
         $.cookie(k, v);
     },
-    
-    get_cookie: function(k)
-    {
+
+    get_cookie: function (k) {
         $.cookie(k);
+    },
+
+    strip: function (str, len) {
+        if (!str) {
+            return '-';
+        } else {
+            if (str.length <= len) {
+                return str;
+            } else {
+                return str.substr(0, len) + '...';
+            }
+        }
+
     }
 };
 //Record pre page
-app.record_per_page = 25;
+app.record_per_page = 50;
 
 app.set_runtime = function()
 {
@@ -178,7 +191,13 @@ app.set_runtime = function()
     $('input[disabled]').css('background-color', 'white');
     $('textarea[disabled]').css('background-color', 'white');
 
-    $('[rel="tooltip"]').tooltip();
+    $('[data-rel="tooltip"]').tooltip();
+};
+
+app.to_string_date = function(s) {
+    var d = s.split('/');
+    var str = d[2] + d[1] + d[0];
+    return str;
 };
 
 $(function() {
