@@ -189,6 +189,7 @@ app.set_runtime = function()
     $('input[data-type="year"]').mask("9999");
     $('input[data-type="number"]').numeric();
     $('input[disabled]').css('background-color', 'white');
+    $('select[disabled]').css('background-color', 'white');
     $('textarea[disabled]').css('background-color', 'white');
 
     $('[data-rel="tooltip"]').tooltip();

@@ -21,17 +21,7 @@ class Patient_model extends CI_Model {
             ->result();
         return $result;
     }
-    public function get_list_sso($amp_code,$start, $limit)
-    {
-        $result = $this->db
-            ->where('amp_code',$amp_code)
-            ->where('e0_sso IS NOT NULL')
-            ->order_by('e0_sso')
-            ->limit($limit, $start)
-            ->get('epe0')
-            ->result();
-        return $result;
-    }
+
     public function get_list($hospcode,$start, $limit)
     {
         $result = $this->db
@@ -48,13 +38,7 @@ class Patient_model extends CI_Model {
             ->count_all_results('epe0');
         return $rs;
     }
-    public function get_list_total_sso($amp_code){
-        $rs = $this->db
-            ->where('amp_code',$amp_code)
-            ->where('e0_sso IS NOT NULL')
-            ->count_all_results('epe0');
-        return $rs;
-    }
+
     public function get_list_total_ssj(){
         $rs = $this->db
             ->where('e0 IS NOT NULL')
@@ -282,21 +266,9 @@ class Patient_model extends CI_Model {
             ->result();
 
         return $rs;
-    }    public function get_waiting_list_sso($amp_code,$start, $limit)
-    {
-        $rs = $this->db
-            ->select(array('s.*', 'i.desc_r as diagname','d506.name as dname506'))
-            ->where('s.amp_code' ,$amp_code)
-            ->where('e0_sso IS NULL')
-            ->join('ref_icd10 i', 'i.code=s.icd10', 'left')
-            ->join('ref_code506 d506', 'd506.code=s.disease', 'left')
-            ->limit($limit, $start)
-            ->order_by('datesick')
-            ->get('epe0 s')
-            ->result();
+    }
 
-        return $rs;
-    }    public function get_waiting_list($hospcode,$start, $limit)
+    public function get_waiting_list($hospcode,$start, $limit)
     {
         $rs = $this->db
             ->select(array('s.*', 'i.desc_r as diagname','d506.name as dname506'))
@@ -323,15 +295,7 @@ class Patient_model extends CI_Model {
 
         return $rs ? $rs : 0;
     }
- public function get_waiting_list_total_sso($amp_code)
-    {
-        $rs = $this->db
-            ->where('amp_code',$amp_code)
-            ->where('e0_sso IS NULL')
-            ->count_all_results('epe0');
 
-        return $rs ? $rs : 0;
-    }
  public function get_waiting_list_total_ssj()
     {
         $rs = $this->db
@@ -466,25 +430,6 @@ class Patient_model extends CI_Model {
             ->select_max('e1',' e1_max')
             ->where('disease',$code506)
             ->where('e1 IS NOT NULL')
-            ->get('epe0')
-            ->row();
-        return $rs;
-    }
-
-    public function get_e0_sso($id){
-        $rs = $this->db
-            ->select_max('e0_sso','e0_sso_max')
-            ->where('amp_code',$id)
-            ->get('epe0')
-            ->row();
-        return $rs;
-    }
-
-    public function get_e1_sso($amp_code,$code506){
-        $rs = $this->db
-            ->select_max('e1_sso',' e1_sso_max')
-            ->where('amp_code',$amp_code)
-            ->where('disease',$code506)
             ->get('epe0')
             ->row();
         return $rs;

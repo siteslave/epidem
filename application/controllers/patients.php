@@ -28,6 +28,12 @@ class Patients extends CI_Controller
         $this->amp_code = $this->session->userdata('amp_code');
         $this->user_level = $this->session->userdata('user_level');
 
+        if($this->user_level == '2')
+            redirect(site_url('ampur'));
+
+        if($this->user_level == '1')
+            redirect(site_url('admin'));
+
         $this->load->model('Patient_model', 'patient');
         $this->load->model('Basic_model', 'basic');
 
@@ -86,22 +92,6 @@ class Patients extends CI_Controller
             foreach($rs as $r)
             {
                 $obj = new stdClass();
-
-/*                if($this->user_level==1)
-                {
-                    $obj->e0        = $r->e0;
-                    $obj->e1        = $r->e1;
-                }
-                else if($this->user_level==2)
-                {
-                    $obj->e0        = $r->e0_sso;
-                    $obj->e1        = $r->e1_sso;
-                }
-                else if($this->user_level==3)
-                {
-                    $obj->e0        = $r->e0_hosp;
-                    $obj->e1        = $r->e1_hosp;
-                }*/
 
                 $obj->e0        = $r->e0_hosp;
                 $obj->e1        = $r->e1_hosp;
@@ -440,18 +430,6 @@ class Patients extends CI_Controller
     public function get_waiting_list_total()
     {
         $rs = $this->patient->get_waiting_list_total($this->hospcode);
-/*
-        switch ($this->session->userdata('user_level')) {
-            case 1:
-                $rs = $this->patient->get_waiting_list_total_ssj();
-                break;
-            case 2:
-                $rs = $this->patient->get_waiting_list_total_sso($this->session->userdata('amp_code'));
-                break;
-            case 3:
-                $rs = $this->patient->get_waiting_list_total($this->hospcode);
-                break;
-        }*/
 
         $json = '{"success": true, "total": ' . $rs . '}';
         render_json($json);
@@ -466,20 +444,6 @@ class Patients extends CI_Controller
         $stop = empty($stop) ? 25 : $stop;
 
         $limit = (int) $stop - (int) $start;
-
-       // $rs = $this->patient->get_waiting_list($start, $limit);
-
-/*        switch ($this->session->userdata('user_level')) {
-            case 1:
-                $rs = $this->patient->get_waiting_list_ssj($start, $limit);
-                break;
-            case 2:
-                $rs = $this->patient->get_waiting_list_sso($this->session->userdata('amp_code'),$start, $limit);
-                break;
-            case 3:
-                $rs = $this->patient->get_waiting_list($this->hospcode,$start, $limit);
-                break;
-        }*/
 
         $rs = $this->patient->get_waiting_list($this->hospcode,$start, $limit);
 
@@ -591,18 +555,6 @@ class Patients extends CI_Controller
     {
         $rs=$this->patient->get_e1($code506);
         return $rs->e1_max;
-    }
-
-
-    public function get_e0_sso($amp_code)
-    {
-        $rs=$this->patient->get_e0_sso($amp_code);
-        return $rs->e0_sso_max;
-    }
-    public function get_e1_sso($amp_code,$code506)
-    {
-        $rs=$this->patient->get_e1_sso($amp_code,$code506);
-        return $rs->e1_sso_max;
     }
 
     public function get_e0_hosp($hospcode)

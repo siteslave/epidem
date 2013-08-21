@@ -212,7 +212,7 @@ if(!function_exists('get_address'))
         $tmb_name = $ci->basic->get_tmb_name($chw, $amp, $tmb);
         $moo_name = $ci->basic->get_moo_name($chw, $amp, $tmb, $moo);
 
-        $address = $moo_name . ' ต.' . $tmb_name . ' อ.' . $amp_name . ' จ.' . $chw_name;
+        $address = 'หมู่ ' . $moo . ' '. $moo_name . ' ต.' . $tmb_name . ' อ.' . $amp_name . ' จ.' . $chw_name;
 
         return $address;
     }
@@ -226,6 +226,20 @@ if(!function_exists('get_diag_name'))
         $rs = $ci->db
             ->where(array('code' => $code))
             ->get('ref_icd10')
+            ->row();
+        return $rs ? $rs->name : '-';
+    }
+
+}
+
+if(!function_exists('get_hospital_name'))
+{
+    function get_hospital_name($code)
+    {
+        $ci =& get_instance();
+        $rs = $ci->db
+            ->where(array('hospcode' => $code))
+            ->get('ref_hospital')
             ->row();
         return $rs ? $rs->name : '-';
     }

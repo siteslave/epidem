@@ -62,7 +62,11 @@ class Users extends CI_Controller
 
             $this->session->set_userdata($data);
 
-            redirect(site_url());
+            if($users->user_level == 1)
+                redirect(site_url('admin'));
+            else if($users->user_level == 2)
+                redirect(site_url('ampur'));
+            else redirect(site_url());
         }
         else
         {

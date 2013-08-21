@@ -89,7 +89,7 @@
 </div>
 <!--##### Survilance Modal View -->
 <div class="modal fade" id="mdl_edit_for_approve">
-    <div class="modal-dialog" style="width: 960px; left: 35%">
+    <div class="modal-dialog" style="width: 960px;">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
