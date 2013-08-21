@@ -180,7 +180,7 @@ class Basic_model extends CI_Model
 
         return count($rs) > 0 ? $rs->desc_r : '-';
     }
-    public function get_diag506name($code)
+    public function get_code506name($code)
     {
         $rs = $this->db
             ->select(array('name'))

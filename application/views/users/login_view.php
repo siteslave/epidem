@@ -1,19 +1,15 @@
-<form class="form-signin" action="#" method="get" id="frmLogin">
-    <h2 class="form-signin-heading">Please sign in</h2>
-    <div id="divAlert" class="alert alert-info">
-        <h4>คำแนะนำ</h4> <span> ระบุชื่อผู้ใช้งานและรหัสผ่าน</span>
+<form id="frm_login" class="form-signin" action="<?=site_url('users/do_login')?>" method="post">
+
+    <?php if(isset($error)) { ?>
+    <div class="alert alert-danger">
+        <a class="close" data-dismiss="alert" href="#" aria-hidden="true">&times;</a>
+        <p>ชื่อผู้ใช้งาน หรือ รหัสผ่าน ไม่ถูกต้อง</p>
     </div>
-    <input type="text" class="input-block-level" placeholder="username@mhkdc.com" id="txtUsername" name="user">
-    <input type="password" class="input-block-level" placeholder="password" id="txtPassword" name="pass">
-    <div class="text-center"><button class="btn btn-primary" type="button" id="btnDoLogin">
-        <i class="icon-user"></i>
-        ลงชื่อเข้าใช้
-    </button>
-    <button class="btn btn-danger" type="button" id="btnCancle">
-        <i class="icon-user"></i>&nbsp;&nbsp;&nbsp; ยกเลิก &nbsp;&nbsp;&nbsp;</button>
-    </div>
-    <div id="divLoading" style="display: none;">
-        &nbsp; <img src="<?php echo base_url(); ?>assets/apps/img/ajax-loader.gif" alt="Loading...">  &nbsp;Logging in...
-    </div>
+    <?php } ?>
+
+    <input type="text" name="username" id="txt_password" class="form-control" placeholder="ชื่อผู้ใช้งาน" autofocus>
+    <input type="password" name="password" id="txt_username" class="form-control" placeholder="รหัสผ่าน">
+    <input type="hidden" name="csrf_token" value="<?=$this->security->get_csrf_hash()?>">
+    <button class="btn btn-lg btn-primary btn-block" type="submit" id="btn_login">Sign in</button>
 </form>
-<script src="<?=base_url()?>assets/apps/js/apps.users.js" charset="utf-8"></script>
+<script src="<?=base_url()?>assets/apps/js/users.js" charset="utf-8"></script>

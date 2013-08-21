@@ -3,19 +3,19 @@
     <li class="active">นำเข้าข้อมูล</li>
 </ul>
 
-<div class="navbar">
+<div class="navbar navbar-default">
     <form action="#" class="navbar-form">
         <label>ตั้งแต่วันที่</label>
-        <input type="text" id="txt_start_date" data-type="date" 
+        <input type="text" id="txt_start_date" data-type="date" class="form-control"
         placeholder="dd/mm/yyyy" title="เช่น 01/01/2556" data-rel="tooltip" style="width: 150px;">
 
         <label>ถึงวันที่</label>
-        <input type="text" id="txt_end_date" data-type="date" 
+        <input type="text" id="txt_end_date" data-type="date" class="form-control"
         placeholder="dd/mm/yyyy" style="width: 150px;" title="เช่น 31/01/2556" data-rel="tooltip">
         <button type="button" class="btn btn-primary" id="btn_get_list">
-            <i class="glyphicon glyphicon-download"></i> นำเข้า
+            <i class="glyphicon glyphicon-cloud-download"></i> นำเข้า
         </button>
-|        <button type="button" class="btn btn-success pull-right" id="" title="นำเข้ารายการ" data-rel="tooltip">
+        <button type="button" class="btn btn-success pull-right">
             นำเข้าทั้งหมด <span id='spn_total'>0</span> ราย
         </button>
     </form>
@@ -44,70 +44,72 @@
 <ul class="pagination" id="main_paging"></ul>
 
 <div class="modal fade" id="mdl_info">
-    <div class="modal-dialog" style="width: 960px; left: 35%">
+    <div class="modal-dialog" style="width: 960px;">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 <h4 class="modal-title">ข้อมูลระบาดวิทยา</h4>
             </div>
             <div class="modal-body">
-                <form action="#" class="form-inline well well-small">
-                    <label for="txt_tdetail_fullname">ชื่อ-สกุล</label>
-                    <input id="txt_tdetail_fullname" type="text" style="width: 250px;" disabled />
-                    <label for="txt_tdetail_cid">CID</label>
-                    <input id="txt_tdetail_cid" type="text" style="width: 250px;" disabled />
-                    <label for="txt_tdetail_birth">วันเกิด</label>
-                    <input id="txt_tdetail_birth" type="text" style="width: 100px;" disabled />
-                    <label for="txt_tdetail_age">อายุ</label>
-                    <input id="txt_tdetail_age" type="text" style="width: 60px;" disabled />
-                    ปี
-                </form>
+                <div class="navbar navbar-default">
+                    <form action="#" class="navbar-form">
+                        <label for="txt_tdetail_fullname">ชื่อ-สกุล</label>
+                        <input class="form-control" id="txt_tdetail_fullname" type="text" style="width: 250px;" disabled />
+                        <label for="txt_tdetail_cid">CID</label>
+                        <input class="form-control" id="txt_tdetail_cid" type="text" style="width: 150px;" disabled />
+                        <label for="txt_tdetail_birth">วันเกิด</label>
+                        <input class="form-control" id="txt_tdetail_birth" type="text" style="width: 100px;" disabled />
+                        <label for="txt_tdetail_age">อายุ</label>
+                        <input class="form-control" id="txt_tdetail_age" type="text" style="width: 150px;" disabled />
+                    </form>
+                </div>
 
-                <legend><i class="icon-user-md"></i> ข้อมูลรับบริการ</legend>
+
+                <legend><i class="glyphicon glyphicon-info-sign"></i> ข้อมูลรับบริการ</legend>
 
                 <form action="#" class="form-horizontal">
                     <div class="row">
-                        <div class="col-lg-2">
+                        <div class="col-md-2">
                             <label for="txt_tdetail_date_serv">วันที่รับบริการ</label>
-                            <input id="txt_tdetail_date_serv" type="text" disabled />
+                            <input class="form-control" id="txt_tdetail_date_serv" type="text" disabled />
                         </div>
-                        <div class="col-lg-2">
+                        <div class="col-md-2">
                             <label for="">วันที่ป่วย</label>
-                            <input id="txt_tdetail_illdate" type="text" disabled />
+                            <input class="form-control" id="txt_tdetail_illdate" type="text" disabled />
                         </div>
-                        <div class="col-lg-2">
+                        <div class="col-md-2">
                             <label for="">สภาพผู้ป่วย</label>
-                            <input id="txt_tdetail_ptstatus" type="text" disabled/>
+                            <input class="form-control" id="txt_tdetail_ptstatus" type="text" disabled/>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-lg-2">
+                        <div class="col-md-2">
                             <label for="txt_tdetail_code506">รหัส</label>
-                            <input id="txt_tdetail_code506" type="text" disabled />
+                            <input class="form-control" id="txt_tdetail_code506" type="text" disabled />
                         </div>
-                        <div class="col-lg-10">
+                        <div class="col-md-10">
                             <label for="txt_tdetail_code506_name">ชื่อกลุ่มโรค 506</label>
-                            <input id="txt_tdetail_code506_name" type="text" disabled/>
+                            <input class="form-control" id="txt_tdetail_code506_name" type="text" disabled/>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-lg-2">
+                        <div class="col-md-2">
                             <label for="txt_tdetail_diagcode">รหัส</label>
-                            <input id="txt_tdetail_diagcode" type="text" disabled />
+                            <input class="form-control" id="txt_tdetail_diagcode" type="text" disabled />
                         </div>
-                        <div class="col-lg-10">
+                        <div class="col-md-10">
                             <label for="txt_tdetail_diagname">การวินิจฉัยโรค</label>
-                            <input id="txt_tdetail_diagname" type="text" disabled />
+                            <input class="form-control" id="txt_tdetail_diagname" type="text" disabled />
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-lg-2">
+                        <div class="col-md-2">
                             <label for="txt_tdetail_date_death">วันที่เสียชีวิต</label>
-                            <input id="txt_tdetail_date_death" type="text" disabled />
+                            <input class="form-control" id="txt_tdetail_date_death" type="text" disabled />
                         </div>
-                        <div class="col-lg-10">
+                        <div class="col-md-10">
                             <label for="">ที่อยู่ขณะป่วย</label>
-                            <input id="txt_tdetail_address" type="text" disabled />
+                            <input class="form-control" id="txt_tdetail_address" type="text" disabled />
                         </div>
                     </div>
                 </form>

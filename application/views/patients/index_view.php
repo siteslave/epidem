@@ -10,11 +10,29 @@
 <div class="tab-content">
     <div class="tab-pane active" id="tab_patient">
      <br>
-        <div class="navbar">
+        <div class="navbar navbar-default">
             <form action="#" class="navbar-form">
+                <label>ตั้งแต่วันที่</label>
+                <input type="text" id="txt_start_date" data-type="date" class="form-control"
+                       placeholder="วว/ดด/ปปปป" title="เช่น 01/01/2556" data-rel="tooltip" style="width: 110px;">
+
+                <label>ถึงวันที่</label>
+                <input type="text" id="txt_end_date" data-type="date" class="form-control"
+                       placeholder="วว/ดด/ปปปป" style="width: 110px;" title="เช่น 31/01/2556" data-rel="tooltip">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary" id="btn_get_list">
+                        <i class="glyphicon glyphicon-search"></i> แสดง
+                    </button>
+                    <button type="button" class="btn btn-success" id="btn_get_list">
+                        <i class="glyphicon glyphicon-cloud-upload"></i> ส่งออก
+                    </button>
+
+                </div>
+                |
                 <label>ค้นหา</label>
-                <input type="text" id="txt_query"
-                       placeholder="ระบุสิ่งที่ต้องการค้นหา" title="ระบุสิ่งที่ต้องการค้นหา" data-rel="tooltip" style="width: 250px;">
+                <input type="text" id="txt_query" class="form-control"
+                       placeholder="ระบุสิ่งที่ต้องการค้นหา" title="หมายเลขบัตรประชาชน, ชื่อ, HN"
+                       data-rel="tooltip" style="width: 250px;">
 
                 <button type="button" class="btn btn-primary" id="btn_search">
                     <i class="glyphicon glyphicon-search"></i>
@@ -34,7 +52,7 @@
                 <th>ชื่อ - สกุล</th>
                 <th>ที่อยู่</th>
                 <th>วันที่ป่วย</th>
-                <th>วินิจฉัย</th>
+                <th>CODE506</th>
                 <th></th>
             </tr>
             </thead>
@@ -44,6 +62,7 @@
         <ul class="pagination" id="main_paging"></ul>
 
     </div>
+
     <div class="tab-pane" id="tab_wait">
         <br>
         <table class="table table-striped" id="tbl_waiting_list">
@@ -55,7 +74,7 @@
                 <th>วันเกิด</th>
                 <th>อายุ (ปี)</th>
                 <th>สถานะ</th>
-                <th>รหัสการวินิจฉัยโรค</th>
+                <th>กลุ่มโรค 506</th>
                 <th></th>
             </tr>
             </thead>
@@ -88,49 +107,49 @@
                         <form action="#" class="form-inline">
                             <input type="hidden" value="" id="txt_edit_id" />
                             <div class="row">
-                                <div class="col-lg-3">
+                                <div class="col-md-3">
                                     <label for="">ชื่อ</label>
-                                    <input type="text" id="txt_name" disabled />
+                                    <input type="text" id="txt_name" class="form-control" disabled />
                                 </div>
-                                <div class="col-lg-3">
+                                <div class="col-md-3">
                                     <label for="">สกุล</label>
-                                    <input type="text" id="txt_lname" disabled />
+                                    <input type="text" id="txt_lname" class="form-control" disabled />
                                 </div>
-                                <div class="col-lg-3">
+                                <div class="col-md-3">
                                     <label for="">เลขบัตรประชาชน</label>
-                                    <input type="text" id="txt_cid" disabled />
+                                    <input type="text" id="txt_cid" class="form-control" disabled />
                                 </div>
-                                <div class="col-lg-2">
+                                <div class="col-md-2">
                                     <label for="">วันเกิด</label>
-                                    <input type="text" id="txt_birth" data-type="date" disabled
+                                    <input type="text" id="txt_birth" data-type="date" class="form-control" disabled
                                            placeholder="วว/ดด/ปปปป" title="ระบุวันที่" data-rel="tooltip" />
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-lg-2">
+                                <div class="col-md-2">
                                     <label for="">อายุ (ป-ด-ว)</label>
-                                    <input type="text" id="txt_age" disabled />
+                                    <input type="text" id="txt_age" class="form-control" disabled />
                                 </div>
-                                <div class="col-lg-2">
+                                <div class="col-md-2">
                                     <label for="">เพศ</label>
-                                    <select id="sl_sex" disabled style="background-color: white;">
+                                    <select id="sl_sex" class="form-control">
                                         <option value="1">ชาย</option>
                                         <option value="2">หญิง</option>
                                     </select>
                                 </div>
-                                <div class="col-lg-2">
+                                <div class="col-md-2">
                                     <label for="">HN</label>
-                                    <input type="text" id="txt_hn" disabled />
+                                    <input type="text" id="txt_hn" class="form-control" disabled />
                                 </div>
-                                <div class="col-lg-6">
+                                <div class="col-md-6">
                                     <label for="">ผู้ปกครอง</label>
-                                    <input type="text" id="txt_nmepate" />
+                                    <input type="text" id="txt_nmepate" class="form-control" />
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-lg-3">
+                                <div class="col-md-2">
                                     <label for="">สถานะสมรส</label>
-                                    <select id="sl_mstatus">
+                                    <select id="sl_mstatus" class="form-control">
                                         <option value="">-*-</option>
                                         <option value="1">โสด</option>
                                         <option value="2">คู่</option>
@@ -141,16 +160,16 @@
                                         <option value="9">ไม่ทราบ</option>
                                     </select>
                                 </div>
-                                <div class="col-lg-3">
+                                <div class="col-md-3">
                                     <label for="">สัญชาติ</label>
-                                    <select id="sl_nations">
+                                    <select id="sl_nations" class="form-control">
                                         <option value="">-*-</option>
                                     <?php foreach($nation as $r) echo '<option value="'.$r->code.'">['.$r->code.'] '.$r->name.'</option>';?>
                                     </select>
                                 </div>
-                                <div class="col-lg-6">
+                                <div class="col-md-7">
                                     <label for="">อาชีพ</label>
-                                    <select id="sl_occupation">
+                                    <select id="sl_occupation" class="form-control">
                                         <?php foreach($occpuation as $r) echo '<option value="'.$r->code.'">['.$r->code.'] '.$r->name.'</option>';?>
                                     </select>
                                 </div>
@@ -160,23 +179,23 @@
                     <div class="tab-pane" id="tab_address_info">
                         <br>
                         <div class="row">
-                            <div class="col-lg-3">
+                            <div class="col-md-3">
                                 <label for="">เลขที่</label>
-                                <input type="text" id="txt_address" />
+                                <input type="text" id="txt_address" class="form-control" />
                             </div>
-                            <div class="col-lg-4">
+                            <div class="col-md-4">
                                 <label for="">ซอย</label>
-                                <input type="text" id="txt_soi" />
+                                <input type="text" id="txt_soi" class="form-control" />
                             </div>
-                            <div class="col-lg-5">
+                            <div class="col-md-5">
                                 <label for="">ถนน</label>
-                                <input type="text" id="txt_road" />
+                                <input type="text" id="txt_road" class="form-control" />
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-lg-4">
+                            <div class="col-md-4">
                                 <label for="">จังหวัด</label>
-                                <select id="sl_changwat">
+                                <select id="sl_changwat" class="form-control">
                                     <option value="">-*-</option>
                                     <?php
                                     foreach($chw as $r)
@@ -186,17 +205,17 @@
                                     ?>
                                 </select>
                             </div>
-                            <div class="col-lg-3">
+                            <div class="col-md-3">
                                 <label for="">อำเภอ</label>
-                                <select id="sl_ampur"></select>
+                                <select id="sl_ampur" class="form-control"></select>
                             </div>
-                            <div class="col-lg-3">
+                            <div class="col-md-3">
                                 <label for="">ตำบล</label>
-                                <select id="sl_tambon"></select>
+                                <select id="sl_tambon" class="form-control"></select>
                             </div>
-                            <div class="col-lg-2">
+                            <div class="col-md-2">
                                 <label for="">หมู่</label>
-                                <select id="sl_moo">
+                                <select id="sl_moo" class="form-control">
                                     <option value="">-*-</option>
                                     <?php
                                         for($i=1;$i<=30;$i++) {
@@ -209,22 +228,22 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-lg-3">
+                            <div class="col-md-3">
                                 <label for="">ในเขต/นอกเขต</label>
-                                <select id="sl_address_type">
+                                <select id="sl_address_type" class="form-control">
                                     <option value="">-*-</option>
                                     <option value="1">ในเขตเทศบาล</option>
                                     <option value="2">นอกเขตเทศบาล</option>
                                     <option value="3">ไม่ทราบ</option>
                                 </select>
                             </div>
-                            <div class="col-lg-6">
+                            <div class="col-md-6">
                                 <label for="">โรงเรียน</label>
-                                <input type="text" id="txt_school" />
+                                <input type="text" id="txt_school" class="form-control" />
                             </div>
-                            <div class="col-lg-3">
+                            <div class="col-md-3">
                                 <label for="">ชั้นเรียน</label>
-                                <input type="text" id="txt_school_class" />
+                                <input type="text" id="txt_school_class" class="form-control" />
                             </div>
                         </div>
                     </div>
@@ -232,60 +251,59 @@
                         <br>
                         <form action="#">
                             <div class="row">
-
-                                <div class="col-lg-2">
+                                <div class="col-md-2">
                                     <label for="">วันที่เขียน</label>
-                                    <input type="text" id="txt_date_record" data-type="date"
+                                    <input type="text" id="txt_date_record" data-type="date" class="form-control"
                                            data-rel="tooltip" title="ระบุวันที่" placeholder="วว/ดด/ปปปป" />
                                 </div>
-                                <div class="col-lg-3">
+                                <div class="col-md-3">
                                     <label for="">วันที่รายงาน</label>
-                                    <input type="text" id="txt_date_report" data-type="date"
+                                    <input type="text" id="txt_date_report" data-type="date" class="form-control"
                                            data-rel="tooltip" title="ระบุวันที่" placeholder="วว/ดด/ปปปป" />
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-lg-2">
+                                <div class="col-md-2">
                                     <label for="">วันที่เริ่มป่วย</label>
-                                    <input type="text" disabled placeholder="วว/ดด/ปปปป" id="txt_illdate"
+                                    <input type="text" disabled placeholder="วว/ดด/ปปปป" id="txt_illdate" class="form-control"
                                         data-type="date" title="ระบุวันที่เริ่มป่วย" data-rel="title" disabled />
                                 </div>
-                                <div class="col-lg-2">
+                                <div class="col-md-2">
                                     <label for="">วันที่รับรักษา</label>
-                                    <input type="text" disabled placeholder="วว/ดด/ปปปป" id="txt_date_serv"
+                                    <input type="text" disabled placeholder="วว/ดด/ปปปป" id="txt_date_serv" class="form-control"
                                         data-type="date" title="ระบุวันที่เริ่มป่วย" data-rel="title" disabled />
                                 </div>
-                                <div class="col-lg-2">
+                                <div class="col-md-2">
                                     <label for="">ประเภทผู้ป่วย</label>
-                                    <select id="sl_patient_type">
+                                    <select id="sl_patient_type" class="form-control">
                                         <option value="">-*-</option>
                                         <option value="1">ผู้ป่วยนอก</option>
                                         <option value="2">ผู้ป่วยใน</option>
                                         <option value="3">ค้นพบในชุมชน</option>
                                     </select>
                                 </div>
-                                <div class="col-lg-6">
+                                <div class="col-md-6">
                                     <label for="">รักษาที่</label>
-                                    <select id="sl_service_place">
+                                    <select id="sl_service_place" class="form-control">
                                         <option value="">-*-</option>
                                         <?php foreach($hospital_type as $r) echo '<option value="'.$r->code.'">['.$r->code.'] '.$r->name.'</option>';?>
                                     </select>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-lg-2">
+                                <div class="col-md-2">
                                     <label for="">ICD10</label>
-                                    <input type="text" id="txt_icd10_code" disabled />
+                                    <input type="text" id="txt_icd10_code" class="form-control" disabled />
                                 </div>
-                                <div class="col-lg-10">
+                                <div class="col-md-10">
                                     <label for="">ชื่อการวินิจฉัยโรค</label>
-                                    <input type="text" id="txt_icd10_name" disabled />
+                                    <input type="text" id="txt_icd10_name" class="form-control" disabled />
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-lg-4">
+                                <div class="col-md-4">
                                     <label for="">กลุ่มโรค 506</label>
-                                    <select id="sl_code506">
+                                    <select id="sl_code506" class="form-control">
                                         <option value="">-*-</option>
                                         <?php
                                         foreach($code506 as $r)
@@ -295,15 +313,15 @@
                                         ?>
                                     </select>
                                 </div>
-                                <div class="col-lg-4">
+                                <div class="col-md-4">
                                     <label for="">Organism</label>
-                                    <select id="sl_organism" title="เลือกกลุ่มโรค 506 ก่อน" data-rel="tooltip">
+                                    <select id="sl_organism" class="form-control" title="เลือกกลุ่มโรค 506 ก่อน" data-rel="tooltip">
                                         <option value="">-*-</option>
                                     </select>
                                 </div>
-                                <div class="col-lg-4">
+                                <div class="col-md-4">
                                     <label for="">Complication</label>
-                                    <select id="sl_complication">
+                                    <select id="sl_complication" class="form-control">
                                         <option value="">-*-</option>
                                         <?php
                                         foreach($comp as $r)
@@ -316,18 +334,18 @@
 
                             </div>
                             <div class="row">
-                                <div class="col-lg-3">
+                                <div class="col-md-3">
                                     <label for="">ผลการรักษา</label>
-                                    <select id="sl_ptstatus">
+                                    <select id="sl_ptstatus" class="form-control">
                                         <option value="">-*-</option>
                                         <option value="1">หาย</option>
                                         <option value="2">เสียชีวิต</option>
                                         <option value="3">ยังรักษาอยู่</option>
                                     </select>
                                 </div>
-                                <div class="col-lg-2" id="div_date_death" style="display: none;">
+                                <div class="col-md-2" id="div_date_death" style="display: none;">
                                     <label for="">วันที่เสียชีวิต</label>
-                                    <input type="text" data-type="date"
+                                    <input type="text" data-type="date" class="form-control"
                                         data-rel="tooltip" title="ระบุวันที่เสียชีวิต" placeholder="วว/ดด/ปปปป" />
                                 </div>
                             </div>
@@ -342,211 +360,6 @@
             </div>
         </div>
     </div>
-</div>
-
-<!--##### E0 Modal view -->
-<div class="modal fade" id="mdl_e0_for_approve">
-<div class="modal-dialog" style="width: 960px; left: 35%">
-<div class="modal-content">
-<div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-    <h4 class="modal-title">บันทึกรายงาน 506</h4>
-</div>
-<div class="modal-body">
-<ul class="nav nav-tabs">
-    <li class="active"><a href="#tab_patient_e0_info" data-toggle="tab"><i class="glyphicon glyphicon-list"></i> ข้อมูลทั่วไป</a></li>
-    <li><a href="#tab_address_e0_info" data-toggle="tab"><i class="glyphicon glyphicon-envelope"></i> ที่อยู่ขณะป่วย </a></li>
-    <li><a href="#tab_service_e0_info" data-toggle="tab"><i class="glyphicon glyphicon-check"></i> ข้อมูลการเจ็บป่วย </a></li>
-</ul>
-<div class="tab-content">
-<div class="tab-pane active" id="tab_patient_e0_info">
-    <br>
-    <form action="#" class="form-inline">
-        <input type="hidden" value="" id="txt_e0_id" />
-        <input type="hidden" value="" id="txt_e0_code506" />
-
-        <div class="row">
-            <div class="col-lg-3">
-                <label for="">ชื่อ</label>
-                <span id="e0_name" ></span>
-            </div>
-            <div class="col-lg-4">
-                <label for="">เลขบัตรประชาชน</label>
-                <span id="e0_cid" ></span>
-            </div>
-            <div class="col-lg-2">
-                <label for="">วันเกิด</label>
-                <span id="e0_birth" data-type="date" disabled
-                       placeholder="วว/ดด/ปปปป" title="ระบุวันที่" data-rel="tooltip" />
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-3">
-                <label for="">อายุ (ป-ด-ว)</label>
-                <span id="e0_age" ></span>
-            </div>
-            <div class="col-lg-2">
-                <label for="">เพศ</label>
-                <span id="e0_sex"  style="background-color: white;">
-                </span>
-            </div>
-            <div class="col-lg-2">
-                <label for="">HN</label>
-                <span id="e0_hn" ></span>
-            </div>
-            <div class="col-lg-5">
-                <label for="">ผู้ปกครอง</label>
-                <span id="e0_nmepate" />
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-3">
-                <label for="">สถานะสมรส</label>
-                <span id="e0_mstatus"></span>
-            </div>
-            <div class="col-lg-2">
-                <label for="">สัญชาติ</label>
-                <span id="e0_nations"></span>
-            </div>
-            <div class="col-lg-6">
-                <label for="">อาชีพ</label>
-                <span id="e0_occupation"></span>
-            </div>
-        </div>
-    </form>
-</div>
-<div class="tab-pane" id="tab_address_e0_info">
-    <br>
-    <div class="row">
-        <div class="col-lg-3">
-            <label for="">เลขที่</label>
-            <span id="e0_address" />
-        </div>
-        <div class="col-lg-4">
-            <label for="">ซอย</label>
-            <span id="e0_soi" />
-        </div>
-        <div class="col-lg-5">
-            <label for="">ถนน</label>
-            <span id="e0_road" />
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-lg-4">
-            <label for="">จังหวัด</label>
-            <span id="e0_changwat"></span>
-        </div>
-        <div class="col-lg-3">
-            <label for="">อำเภอ</label>
-            <span id="e0_ampur"></span>
-        </div>
-        <div class="col-lg-3">
-            <label for="">ตำบล</label>
-            <span id="e0_tambon"></span>
-        </div>
-        <div class="col-lg-2">
-            <label for="">หมู่</label></span>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-lg-3">
-            <label for="">ในเขต/นอกเขต</label>
-            <span id="e0_address_type"></span>
-        </div>
-        <div class="col-lg-6">
-            <label for="">โรงเรียน</label>
-            <span id="e0_school" />
-        </div>
-        <div class="col-lg-3">
-            <label for="">ชั้นเรียน</label>
-            <span id="e0_school_class" />
-        </div>
-    </div>
-</div>
-<div class="tab-pane" id="tab_service_e0_info">
-    <br>
-    <form action="#">
-        <div class="row">
-
-            <div class="col-lg-2">
-                <label for="">วันที่เขียน</label>
-                <span id="e0_date_record" data-type="date"
-                       data-rel="tooltip" title="ระบุวันที่" placeholder="วว/ดด/ปปปป" />
-            </div>
-            <div class="col-lg-3">
-                <label for="">วันที่รายงาน</label>
-                <span id="e0_date_report" data-type="date"
-                       data-rel="tooltip" title="ระบุวันที่" placeholder="วว/ดด/ปปปป" />
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-2">
-                <label for="">วันที่เริ่มป่วย</label>
-                <span disabled placeholder="วว/ดด/ปปปป" id="e0_illdate"
-                       data-type="date" title="ระบุวันที่เริ่มป่วย" data-rel="title" ></span>
-            </div>
-            <div class="col-lg-2">
-                <label for="">วันที่รับรักษา</label>
-                <span disabled placeholder="วว/ดด/ปปปป" id="e0_date_serv"
-                       data-type="date" title="ระบุวันที่เริ่มป่วย" data-rel="title" ></span>
-            </div>
-            <div class="col-lg-2">
-                <label for="">ประเภทผู้ป่วย</label>
-                <span id="e0_patient_type"></span>
-            </div>
-            <div class="col-lg-6">
-                <label for="">รักษาที่</label>
-                <span id="e0_service_place"></span>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-2">
-                <label for="">ICD10</label>
-                <span id="e0_icd10_code" ></span>
-            </div>
-            <div class="col-lg-10">
-                <label for="">ชื่อการวินิจฉัยโรค</label>
-                <span id="e0_icd10_name" ></span>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-4">
-                <label for="">กลุ่มโรค 506</label>
-                <span id="e0_code506"></span>
-            </div>
-            <div class="col-lg-4">
-                <label for="">Organism</label>
-                <span id="e0_organism" title="เลือกกลุ่มโรค 506 ก่อน" data-rel="tooltip">
-                </span>
-            </div>
-            <div class="col-lg-4">
-                <label for="">Complication</label>
-                <span id="e0_complication"></span>
-            </div>
-
-        </div>
-        <div class="row">
-            <div class="col-lg-3">
-                <label for="">ผลการรักษา</label>
-                <span id="e0_ptstatus"></span>
-            </div>
-            <div class="col-lg-2" id="e0_date_death" style="display: none;">
-                <label for="">วันที่เสียชีวิต</label>
-                <span data-type="date"
-                       data-rel="tooltip" title="ระบุวันที่เสียชีวิต" placeholder="วว/ดด/ปปปป" />
-            </div>
-        </div>
-    </form>
-</div>
-</div>
-
-</div>
-<div class="modal-footer">
-    <a href="javascript:void(0);" class="btn btn-success" id="btn_save_e0"><i class="glyphicon glyphicon-ok"></i> บันทึกข้อมูล</a>
-    <a href="javascript:void(0);" class="btn btn-danger" data-dismiss="modal"><i class="glyphicon glyphicon-remove"></i> ปิดหน้าต่าง</a>
-</div>
-</div>
-</div>
 </div>
 
 <script src="<?=base_url()?>assets/apps/js/patient.index.js" charset="utf-8"></script>

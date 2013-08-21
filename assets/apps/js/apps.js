@@ -180,7 +180,7 @@ var app = {
     }
 };
 //Record pre page
-app.record_per_page = 50;
+app.record_per_page = 25;
 
 app.set_runtime = function()
 {

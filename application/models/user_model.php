@@ -1,15 +1,15 @@
 <?php
 class User_model extends CI_Model
 {
-    public function do_auth($u, $p)
+    public function do_auth($username, $password)
     {
         $rs = $this->db
-            ->select('u.id,u.username,u.name,u.user_level,u.office,off.off_name')
+            ->select('u.id,u.username,u.name,u.user_level, u.user_type, u.office as hospcode,h.name as hospname')
 
-            ->where('username', $u)
-            ->where('password', md5(md5($p).'bhjhjghjg'))
-           // ->count_all_results('mas_users');
-            ->join('co_office off','u.office=off.off_id','LEFT')
+            ->where('username', $username)
+            ->where('password', md5($password))
+            ->join('ref_hospital h','h.hospcode=u.office','LEFT')
+            ->limit(1)
             ->get('mas_users u')
             ->row();
         //echo $this->db->last_query();

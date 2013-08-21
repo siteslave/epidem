@@ -278,16 +278,20 @@ $(function () {
     };
 
     patient.set_tmp_detail = function (v) {
-        $('#txt_tdetail_fullname').val(v.fullname);
+        var fullname = v.name + ' ' + v.lname;
+        var age = v.age.year + ' ปี ' + v.age.month + ' เดือน ' + v.age.day + ' วัน';
+        var ptstatus = v.ptstatus == '1' ? 'หาย' : v.ptstatus == '2' ? 'ตาย' : v.ptstatus == '3' ? 'ยังรักษาอยู่' : v.ptstatus == '9' ? 'ไม่ทราบ' : '-';
+
+        $('#txt_tdetail_fullname').val(fullname);
         $('#txt_tdetail_cid').val(v.cid);
         $('#txt_tdetail_birth').val(v.birth);
-        $('#txt_tdetail_age').val(v.age);
+        $('#txt_tdetail_age').val(age);
         $('#txt_tdetail_date_serv').val(v.date_serv);
         $('#txt_tdetail_illdate').val(v.illdate);
-        $('#txt_tdetail_ptstatus').val(v.ptstatus);
+        $('#txt_tdetail_ptstatus').val(ptstatus);
         $('#txt_tdetail_date_death').val(v.date_death);
         $('#txt_tdetail_code506').val(v.code506);
-        $('#txt_tdetail_code506_nme').val(v.code506_name);
+        $('#txt_tdetail_code506_name').val(v.code506_name);
         $('#txt_tdetail_diagcode').val(v.diagcode);
         $('#txt_tdetail_diagname').val(v.diagname);
     };

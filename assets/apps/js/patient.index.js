@@ -181,7 +181,7 @@ $(function () {
                         '<td>' + v.datesick + '</td>' +
                         '<td>' + app.strip(v.code506, 45) + '</td>' +
                         '<td><a href="javascript:void(0);" class="btn btn-small btn-success" data-id="' + v.id + '" ' +
-                        'data-name="btn_patient_detail"><i class="glyphicon glyphicon-edit"></i></a></td>' +
+                        'data-name="btn_get_e0_detail"><i class="glyphicon glyphicon-edit"></i></a></td>' +
                         '</tr>'
                 );
             });
@@ -317,12 +317,12 @@ $(function () {
                                 $('#tbl_waiting_list > tbody').append('<tr><td colspan="7">ไม่พบรายการ</td></tr>');
                             } else {
 
-                                if(user_level==1||user_level==2){
-                                patient.set_waiting_list_e0(data);
-                                }else{
+                                //if(user_level==1||user_level==2){
+                                //patient.set_waiting_list_e0(data);
+                                //}else{
 
                                     patient.set_waiting_list(data);
-                                }
+                                //}
                             }
                         });
 
@@ -510,7 +510,7 @@ $(function () {
         patient.get_e0_detail(id);
 
     });
-    $(document).on('click', 'a[data-name="btn_patient_detail"]', function () {
+    $(document).on('click', 'a[data-name="btn_get_e0_detail"]', function () {
 
         var id = $(this).data('id');
         //get detail
@@ -545,13 +545,59 @@ $(function () {
                 //set detail
                 patient.set_e0_detail(data.rows);
                 //show modal
-
-                    patient.modal.show_e0_approve();
+                patient.modal.show_edit_approve();
             }
         });
 
     };
-    //set patient detail
+
+    patient.set_e0_detail = function (v) {
+
+        var ptname = v.name.split(' ');
+
+        $('#txt_edit_id').val(v.id);
+        $('#txt_name').val(ptname[0]);
+        $('#txt_lname').val(ptname[1]);
+        $('#txt_cid').val(v.cid);
+        $('#txt_birth').val(v.birth);
+        $('#txt_age').val(v.age.year + '-' + v.age.month + '-' + v.age.day);
+        $('#sl_sex').val(v.sex).prop('disabled', true).css('background-color', 'white');
+        $('#txt_hn').val(v.hn);
+        $('#txt_nmepate').val(v.nmepate).prop('disabled', true).css('background-color', 'white');
+        $('#sl_mstatus').val(v.mstatus).prop('disabled', true).css('background-color', 'white');
+        $('#sl_nations').val(v.nation).prop('disabled', true).css('background-color', 'white');
+        $('#sl_occupation').val(v.occupation).prop('disabled', true).css('background-color', 'white');
+        $('#txt_address').val(v.address).prop('disabled', true).css('background-color', 'white');
+        $('#txt_soi').val(v.soi).prop('disabled', true).css('background-color', 'white');
+        $('#txt_road').val(v.road).prop('disabled', true).css('background-color', 'white');
+        $('#sl_changwat').val(v.chw).prop('disabled', true).css('background-color', 'white');
+        $('#sl_ampur').prop('disabled', true).css('background-color', 'white');
+        $('#sl_tambon').prop('disabled', true).css('background-color', 'white');
+        patient.get_ampur_list(v.chw, v.amp);
+        patient.get_tambon_list(v.chw, v.amp, v.tmb);
+        $('#sl_moo').val(v.moo).prop('disabled', true).css('background-color', 'white');
+        $('#sl_address_type').val(v.address_type).prop('disabled', true).css('background-color', 'white');
+        $('#txt_school').val(v.school).prop('disabled', true).css('background-color', 'white');
+        $('#txt_school_class').val(v.school_class).prop('disabled', true).css('background-color', 'white');
+        $('#txt_illdate').val(v.illdate).prop('disabled', true).css('background-color', 'white');
+        $('#txt_date_serv').val(v.date_serv).prop('disabled', true).css('background-color', 'white');
+        $('#sl_patient_type').val(v.patient_type).prop('disabled', true).css('background-color', 'white');
+        $('#sl_service_place').val(v.service_place).prop('disabled', true).css('background-color', 'white');
+        $('#txt_icd10_code').val(v.diagcode).prop('disabled', true).css('background-color', 'white');
+        $('#txt_icd10_name').val(v.diagname).prop('disabled', true).css('background-color', 'white');
+        $('#sl_code506').val(v.code506).prop('disabled', true).css('background-color', 'white');
+        $('#txt_e0_code506').val(v.code506).prop('disabled', true).css('background-color', 'white');
+        $('#sl_organism').prop('disabled', true).css('background-color', 'white');
+        patient.get_organism(v.code506, v.organism);
+        $('#sl_complication').val(v.complication).prop('disabled', true).css('background-color', 'white');
+        $('#sl_ptstatus').val(v.ptstatus).prop('disabled', true).css('background-color', 'white');
+        if (v.ptstatus == '2') $('#div_date_death').fadeIn('slow');
+        $('#txt_date_death').val(v.date_death).prop('disabled', true).css('background-color', 'white');
+        $('#txt_date_record').val(v.date_record).prop('disabled', true).css('background-color', 'white');
+        $('#txt_date_report').val(v.date_report).prop('disabled', true).css('background-color', 'white');
+
+        $('#btn_save').fadeOut('slow');
+    };
 
     patient.set_edit_detail = function (v) {
 
@@ -594,48 +640,11 @@ $(function () {
         $('#txt_date_record').val(v.date_record);
         $('#txt_date_report').val(v.date_report);
     };
-    patient.set_e0_detail = function (v) {
 
-        $('#txt_e0_id').val(v.id);
-        $('#txt_e0_code506').val(v.disease);
+    $('#mdl_edit_for_approve').on('hidden.bs.modal', function () {
+        patient.clear_form();
+    })
 
-        $('#e0_name').text(v.name);
-        $('#e0_cid').text(v.cid);
-        $('#e0_birth').text(v.birth);
-        $('#e0_age').text(v.age.year + '-' + v.age.month + '-' + v.age.day);
-        $('#e0_sex').text(v.sex);
-        $('#e0_hn').text(v.hn);
-        //$('#txt_nmepate').val('');
-        $('#e0_mstatus').text(v.mstatus);
-        $('#e0_nations').text(v.nation);
-        $('#e0_occupation').text(v.occupation);
-        $('#e0_address').text(v.illhouse);
-        //$('#txt_soi').text();
-        //$('#txt_road').text();
-        $('#e0_changwat').text(v.illchangwat);
-        patient.get_ampur_list(v.illchangwat, v.illampur);
-        patient.get_tambon_list(v.illchangwat, v.illampur, v.illtambon);
-        //$('#sl_tambon').text();
-        $('#e0_moo').text(v.illmoo);
-        //$('#sl_address_type').text();
-        //$('#txt_school').text();
-        //$('#txt_school_class').text();
-        $('#e0_illdate').text(v.illdate);
-        $('#e0_date_serv').text(v.date_serv);
-        //$('#sl_patient_type').text();
-        //$('#sl_service_place').text();
-        $('#e0_icd10_code').text(v.diagcode);
-        $('#e0_icd10_name').text(v.diagname);
-        $('#e0_code506').text(v.code506);
-        $('#e0_e0_code506').text(v.code506);
-        patient.get_organism(v.code506, v.organism);
-        $('#e0_complication').text(v.complication);
-        $('#e0_ptstatus').text(v.ptstatus);
-        if (v.ptstatus == '2') $('#div_date_death').fadeIn('slow');
-        $('#e0_date_death').text(v.date_death);
-        $('#e0_date_record').text(v.date_record);
-        $('#e0_date_report').text(v.date_report);
-    };
     patient.clear_form = function () {
         $('#txt_edit_id').val('');
         $('#txt_name').val('');
@@ -644,32 +653,61 @@ $(function () {
         $('#txt_birth').val('');
         $('#txt_age').val('');
         app.set_first_selected($('#sl_sex'));
+        $('#sl_sex').removeProp('disabled');
         $('#txt_hn').val('');
-        $('#txt_nmepate').val('');
+        $('#txt_nmepate').val('').removeProp('disabled');
+
         app.set_first_selected($('#sl_mstatus'));
         app.set_first_selected($('#sl_nations'));
         app.set_first_selected($('#sl_occupation'));
-        $('#txt_address').val('');
-        $('#txt_soi').val('');
-        $('#txt_road').val('');
+
+        $('#sl_mstatus').removeProp('disabled');
+        $('#sl_nations').removeProp('disabled');
+        $('#sl_occupation').removeProp('disabled');
+
+        $('#txt_address').val('').removeProp('disabled');
+        $('#txt_soi').val('').removeProp('disabled');
+        $('#txt_road').val('').removeProp('disabled');
         app.set_first_selected($('#sl_changwat'));
-        $('#sl_ampur').empty();
-        $('#sl_tambon').empty();
+
+        $('#sl_changwat').removeProp('disabled');
+        $('#sl_ampur').empty().removeProp('disabled');
+        $('#sl_tambon').empty().removeProp('disabled');
+
         app.set_first_selected($('#sl_moo'));
         app.set_first_selected($('#sl_address_type'));
-        $('#txt_school').val('');
-        $('#txt_school_class').val('');
+
+        $('#sl_address_type').removeProp('disabled');
+        $('#sl_moo').removeProp('disabled');
+
+        $('#sl_service_place').removeProp('disabled');
+        $('#sl_patient_type').removeProp('disabled');
+
+        $('#txt_school').val('').removeProp('disabled');
+        $('#txt_school_class').val('').removeProp('disabled');
         $('#txt_illdate').val('');
         $('#txt_date_serv').val('');
+
         app.set_first_selected($('#sl_patient_type'));
         app.set_first_selected($('#sl_service_place'));
+
         $('#txt_icd10_code').val('');
         $('#txt_icd10_name').val('');
+
         app.set_first_selected($('#sl_code506'));
         app.set_first_selected($('#sl_ptstatus'));
-        $('#txt_date_death').val('');
-        $('#txt_date_record').val('');
-        $('#txt_date_report').val('');
+
+        $('#sl_code506').removeProp('disabled');
+        $('#sl_ptstatus').removeProp('disabled');
+        $('#sl_complication').removeProp('disabled');
+        $('#sl_organism').removeProp('disabled');
+
+
+        $('#txt_date_death').val('').removeProp('disabled');
+        $('#txt_date_record').val('').removeProp('disabled');
+        $('#txt_date_report').val('').removeProp('disabled');
+
+        $('#btn_save').fadeIn('slow');
     };
 
     //Save data
@@ -785,11 +823,6 @@ $(function () {
                 });
             }
         }
-
-
-
-
-
     });
 
     $('#btn_save_e0').on('click', function () {

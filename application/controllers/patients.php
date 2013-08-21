@@ -20,7 +20,10 @@ class Patients extends CI_Controller
     {
         parent::__construct();
 
-        $this->hospcode = $this->session->userdata('off_id');
+        if(!$this->session->userdata('username'))
+            redirect(site_url('users/login'));
+
+        $this->hospcode = $this->session->userdata('hospcode');
         $this->hserv = $this->session->userdata('hserv');
         $this->amp_code = $this->session->userdata('amp_code');
         $this->user_level = $this->session->userdata('user_level');
@@ -61,7 +64,8 @@ class Patients extends CI_Controller
         $stop = empty($stop) ? 25 : $stop;
 
         $limit = (int) $stop - (int) $start;
-        switch ($this->session->userdata('user_level')) {
+
+/*        switch ($this->session->userdata('user_level')) {
             case 1:
                 $rs = $this->patient->get_list_ssj($start, $limit);
                 break;
@@ -71,30 +75,43 @@ class Patients extends CI_Controller
             case 3:
                 $rs = $this->patient->get_list($this->hospcode,$start, $limit);
                 break;
-        }
+        }*/
 
-        if($rs){
+        $rs = $this->patient->get_list($this->hospcode,$start, $limit);
+
+        if($rs)
+        {
             $arr_result = array();
 
             foreach($rs as $r)
             {
                 $obj = new stdClass();
-                if($this->user_level==1){
-                $obj->e0        = $r->e0;
-                $obj->e1        = $r->e1;
-                }if($this->user_level==2){
-                $obj->e0        = $r->e0_sso;
-                $obj->e1        = $r->e1_sso;
-                }if($this->user_level==3){
+
+/*                if($this->user_level==1)
+                {
+                    $obj->e0        = $r->e0;
+                    $obj->e1        = $r->e1;
+                }
+                else if($this->user_level==2)
+                {
+                    $obj->e0        = $r->e0_sso;
+                    $obj->e1        = $r->e1_sso;
+                }
+                else if($this->user_level==3)
+                {
+                    $obj->e0        = $r->e0_hosp;
+                    $obj->e1        = $r->e1_hosp;
+                }*/
+
                 $obj->e0        = $r->e0_hosp;
                 $obj->e1        = $r->e1_hosp;
-                }
+
                 $obj->id        =$r->id;
                 $obj->name      = $r->name;
                 $obj->datesick  = to_thai_date($r->datesick);
                 $obj->address   = $r->address . ' ' . get_address($r->addrcode);
-                $obj->diag  = $r->icd10 . ' ' . $this->basic->get_diagname($r->icd10);
-                $obj->code506  = $r->disease . ' ' . $this->basic->get_diag506name($r->disease);
+                $obj->diag      = $r->icd10 . ' ' . $this->basic->get_diagname($r->icd10);
+                $obj->code506   = $r->disease . ' ' . $this->basic->get_code506name($r->disease);
 
 
                 $arr_result[] = $obj;
@@ -102,7 +119,9 @@ class Patients extends CI_Controller
 
             $rows = json_encode($arr_result);
             $json = '{"success": true, "rows": '.$rows.'}';
-        }else{
+        }
+        else
+        {
             $json = '{"success": false, "msg": "No result."}';
         }
 
@@ -111,8 +130,7 @@ class Patients extends CI_Controller
 
     public function get_list_total()
     {
-        $total = $this->patient->get_list_total($this->hospcode);
-        switch ($this->session->userdata('user_level')) {
+/*        switch ($this->session->userdata('user_level')) {
             case 1:
                 $total = $this->patient->get_list_total_ssj();
                 break;
@@ -122,14 +140,16 @@ class Patients extends CI_Controller
             case 3:
                 $total = $this->patient->get_list_total($this->hospcode);
                 break;
-        }
-        $json = '{"success": true, "total": '.$total.'}';
+        }*/
 
+        $total = $this->patient->get_list_total($this->hospcode);
+
+        $json = '{"success": true, "total": '.$total.'}';
         render_json($json);
     }
 
 
-    public function get_import($s='', $e='', $start='', $stop='')
+    public function get_import()
     {
         $s = $this->input->post('s');
         $e = $this->input->post('e');
@@ -152,7 +172,7 @@ class Patients extends CI_Controller
         render_json($json);
     }
 
-    public function get_import_total($s='', $e='')
+    public function get_import_total()
     {
         $s = $this->input->post('s');
         $e = $this->input->post('e');
@@ -259,6 +279,7 @@ class Patients extends CI_Controller
                     $obj->diagcode      = $rs->diagcode;
                     $obj->diagname      = $this->basic->get_diagname($rs->diagcode);
                     $obj->code506       = $rs->code506;
+                    $obj->code506_name  = $this->basic->get_code506name($obj->code506);
                     $obj->complication  = $rs->complication;
                     $obj->organism      = $rs->organism;
                     $obj->date_report   = get_current_thai_date();
@@ -300,21 +321,45 @@ class Patients extends CI_Controller
                     $obj->name          = $rs->name;
                     $obj->birth         = to_thai_date($rs->birth);
                     $obj->age           = get_current_age($rs->birth);
-                    $obj->sex           = $this->basic->get_sex($rs->sex);
+                    $obj->sex           = $rs->sex;
                     $obj->cid           = $rs->cid;
                     $obj->hn            = $rs->hn;
-                    $obj->mstatus       = $this->basic->get_mstatus($rs->marietal);
-                    $obj->nation        = $this->basic->get_nation($rs->nation);
-                    $obj->occupation    = $this->basic->get_occupation($rs->occupat);
+                    $obj->mstatus       = $rs->marietal;
+                    $obj->nation        = $rs->nation;
+                    $obj->nmepate       = $rs->nmepate;
+                    $obj->occupation    = $rs->occupat;
                     $obj->date_serv     = to_thai_date($rs->datesick);
                     $obj->ptstatus      = $rs->result;
                     $obj->date_death    = to_thai_date($rs->datedeath);
                     $obj->ptstatus_code = $rs->result;
                     $obj->illdate       = to_thai_date($rs->datefine);
-                    $obj->address       = $rs->address;
+                    $obj->patient_type  = $rs->type;
+                    $obj->service_place = $rs->hospital;
+                    $obj->school        = $rs->school;
+                    $obj->school_class  = $rs->class;
+                    $obj->address_type  = $rs->metropol;
+
+                    $obj->chw = substr($rs->addrcode, 0, 2);
+                    $obj->amp = substr($rs->addrcode, 2, 2);
+                    $obj->tmb = substr($rs->addrcode, 4, 2);
+                    $obj->moo = substr($rs->addrcode, 6, 2);
+
+                    //$chw_name = $this->basic->get_province_name($chw);
+                    //$amp_name = $this->basic->get_ampur_name($chw, $amp);
+                    //$tmb_name = $this->basic->get_tmb_name($chw, $amp, $tmb);
+                    //$moo_name = $this->basic->get_moo_name($chw, $amp, $tmb, $moo);
+
+                    //$obj->chw_name  = $chw_name;
+                    //$obj->amp_name  = $amp_name;
+                    //$obj->tmb_name  = $tmb_name;
+                    //$obj->moo_name  = $moo_name;
+                    $obj->address   = $rs->address;
+                    $obj->soi       = $rs->soi;
+                    $obj->road      = $rs->road;
+
                     $obj->code506       = $rs->disease;
                     $obj->diagname      = $this->basic->get_diagname($rs->icd10);
-                    $obj->icd10         = $rs->icd10;
+                    $obj->diagcode      = $rs->icd10;
                     $obj->office_id     =$rs->office_id;
                     $obj->complication  = $rs->complica;
                     $obj->organism      = $rs->organism;
@@ -394,8 +439,8 @@ class Patients extends CI_Controller
 
     public function get_waiting_list_total()
     {
-        //$rs = $this->patient->get_waiting_list_total();
-
+        $rs = $this->patient->get_waiting_list_total($this->hospcode);
+/*
         switch ($this->session->userdata('user_level')) {
             case 1:
                 $rs = $this->patient->get_waiting_list_total_ssj();
@@ -406,7 +451,7 @@ class Patients extends CI_Controller
             case 3:
                 $rs = $this->patient->get_waiting_list_total($this->hospcode);
                 break;
-        }
+        }*/
 
         $json = '{"success": true, "total": ' . $rs . '}';
         render_json($json);
@@ -424,7 +469,7 @@ class Patients extends CI_Controller
 
        // $rs = $this->patient->get_waiting_list($start, $limit);
 
-        switch ($this->session->userdata('user_level')) {
+/*        switch ($this->session->userdata('user_level')) {
             case 1:
                 $rs = $this->patient->get_waiting_list_ssj($start, $limit);
                 break;
@@ -434,7 +479,9 @@ class Patients extends CI_Controller
             case 3:
                 $rs = $this->patient->get_waiting_list($this->hospcode,$start, $limit);
                 break;
-        }
+        }*/
+
+        $rs = $this->patient->get_waiting_list($this->hospcode,$start, $limit);
 
         $json = $rs ? '{"success": true, "rows": ' . json_encode($rs) . '}' : '{"success": false, "msg": "ไม่พบรายการ"}';
         render_json($json);
@@ -453,13 +500,13 @@ class Patients extends CI_Controller
                 if(!$is_exist)
                 {
 
-                    $data['e0_hosp'] = ($this->get_e0_hosp($this->hospcode))+1;
-                    $data['e1_hosp'] = ($this->get_e1_hosp($this->hospcode, $data['code506']))+1;
+                    $data['e0_hosp']    = ( $this->get_e0_hosp( $this->hospcode ) ) + 1;
+                    $data['e1_hosp']    = ( $this->get_e1_hosp( $this->hospcode, $data['code506'] ) ) + 1;
 
-                    $data['amp_code']=$this->amp_code;
-                    $data['addrcode'] = $data['changwat'] . $data['ampur'] . $data['tambon'] . $data['moo'];
+                    $data['amp_code']   = $this->amp_code;
+                    $data['addrcode']   = $data['changwat'] . $data['ampur'] . $data['tambon'] . $data['moo'];
 
-                    $age = get_current_age(to_mysql_date($data['birth']));
+                    $age = get_current_age( to_mysql_date( $data['birth'] ) );
 
                     $data['agey'] = $age['year'];
                     $data['agem'] = $age['month'];
@@ -467,11 +514,11 @@ class Patients extends CI_Controller
 
                     $data['hserv'] = $this->hserv;
 
-                    $rs = $this->patient->save($data);
+                    $rs = $this->patient->save( $data );
                     if($rs)
                     {
                         //update status
-                        $this->patient->updat_waiting_status($data['id'], '2');
+                        $this->patient->updat_waiting_status( $data['id'], '2' );
                         $json = '{"success": true}';
                     }
                     else 
@@ -497,7 +544,7 @@ class Patients extends CI_Controller
             show_error('No ajax.', 404);
         }
     }
-    public function save_e0()
+/*    public function save_e0()
     {
         if($this->input->is_ajax_request())
         {
@@ -506,11 +553,12 @@ class Patients extends CI_Controller
             {
                     $data['e0'] = ($this->get_e0())+1;
                     $data['e1'] = ($this->get_e1($data['code506']))+1;
-                    $data['e0_sso'] = ($this->get_e0_sso($this->amp_code))+1;
-                    $data['e1_sso'] = ($this->get_e1_sso($this->amp_code, $data['code506']))+1;
+                    //$data['e0_sso'] = ($this->get_e0_sso($this->amp_code))+1;
+                    //$data['e1_sso'] = ($this->get_e1_sso($this->amp_code, $data['code506']))+1;
 
 
                     $rs = $this->patient->save_e0($data);
+
                     if($rs)
                     {
                         //update status
@@ -532,13 +580,8 @@ class Patients extends CI_Controller
         {
             show_error('No ajax.', 404);
         }
-    }
+    }*/
 
-    public function get_age()
-    {
-        $d = '1980-08-19';
-        echo var_dump(get_current_age($d));
-    }
     public function get_e0()
     {
         $rs=$this->patient->get_e0();

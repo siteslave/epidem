@@ -2,6 +2,13 @@
 
 class Pages extends CI_Controller {
 
+    public function __construct()
+    {
+        parent::__construct();
+
+        if(!$this->session->userdata('username'))
+            redirect(site_url('users/login'));
+    }
 	/**
 	* Index controller
 	 */

@@ -8,52 +8,14 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title> EPIDEM Online </title>
-
-    <script type="text/javascript" charset="utf-8">
-        var site_url = '<?=site_url()?>';
-        var base_url = '<?=base_url()?>';
-
-        var csrf_token = '<?php echo $this->security->get_csrf_hash(); ?>';
-    </script>
-    <style>
-    body {
-    padding-top: 40px;
-    padding-bottom: 40px;
-    background-color: #f5f5f5;
-    }
-
-    .form-signin {
-    max-width: 400px;
-    padding: 19px 29px 29px;
-    margin: 0 auto 20px;
-    background-color: #fff;
-    border: 1px solid #e5e5e5;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    border-radius: 5px;
-    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
-    -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
-    box-shadow: 0 1px 2px rgba(0,0,0,.05);
-    }
-    .form-signin .form-signin-heading,
-    .form-signin .checkbox {
-    margin-bottom: 10px;
-    }
-    .form-signin input[type="text"],
-    .form-signin input[type="password"] {
-    font-size: 16px;
-    height: auto;
-    margin-bottom: 15px;
-    padding: 7px 9px;
-    }
-
-    </style>
+    <title> EPIDEM :: Login </title>
     <!-- Bootstrap core CSS -->
-    <link href="<?=base_url()?>assets/css/bootstrap.css" rel="stylesheet">
-    <link href="<?=base_url()?>assets/css/bootstrap-glyphicons.css" rel="stylesheet">
+    <link href="<?=base_url()?>assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="<?=base_url()?>assets/css/signin.css" rel="stylesheet">
     <link href="<?=base_url()?>assets/css/freeow/freeow.css" rel="stylesheet">
-    <link href="<?=base_url()?>assets/apps/css/app.css" rel="stylesheet">
+
+    <script src="<?=base_url()?>assets/js/jquery.js"></script>
+    <script src="<?=base_url()?>assets/js/bootstrap.min.js"></script>
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -68,29 +30,21 @@
     <link rel="apple-touch-icon-precomposed" href="<?=base_url()?>assets/ico/apple-touch-icon-57-precomposed.png">
     <link rel="shortcut icon" href="<?=base_url()?>assets/ico/favicon.png">
 
-    <script src="<?=base_url()?>assets/js/jquery.js"></script>
-    <script src="<?=base_url()?>assets/js/bootstrap.min.js"></script>
-    <!-- load library -->
-    <script src="<?=base_url()?>assets/js/underscore.min.js"></script>
-    <script src="<?=base_url()?>assets/js/jquery.blockUI.js"></script>
-    <script src="<?=base_url()?>assets/js/jquery.cookie.min.js"></script>
+    <script type="text/javascript" charset="utf-8">
+        var site_url = '<?=site_url()?>';
+        var base_url = '<?=base_url()?>';
+
+        var csrf_token = '<?php echo $this->security->get_csrf_hash(); ?>';
+    </script>
+
     <script src="<?=base_url()?>assets/js/jquery.freeow.min.js"></script>
-    <script src="<?=base_url()?>assets/js/jquery.maskedinput.min.js"></script>
-    <script src="<?=base_url()?>assets/js/jquery.numeric.js"></script>
-    <script src="<?=base_url()?>assets/js/jquery.paging.min.js"></script>
-    <script src="<?=base_url()?>assets/js/numeral.min.js"></script>
-
-
-    <!-- load application -->
-    <script src="<?=base_url()?>assets/apps/js/apps.js"></script>
 </head>
 
 <body>
+    <div id="freeow" class="freeow freeow-bottom-right"></div>
 
-<div id="freeow" class="freeow freeow-top-right"></div>
-
-<div class="container">
-   <?php echo $content_for_layout; ?>
-</div>
+    <div class="container">
+       <?php echo $content_for_layout; ?>
+    </div>
 </body>
 </html>

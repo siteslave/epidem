@@ -459,7 +459,9 @@ class Patient_model extends CI_Model {
             ->get('epe0')
             ->row();
         return $rs;
-    } public function get_e1($code506){
+    }
+
+    public function get_e1($code506){
         $rs = $this->db
             ->select_max('e1',' e1_max')
             ->where('disease',$code506)
@@ -467,14 +469,18 @@ class Patient_model extends CI_Model {
             ->get('epe0')
             ->row();
         return $rs;
-    }public function get_e0_sso($id){
+    }
+
+    public function get_e0_sso($id){
         $rs = $this->db
             ->select_max('e0_sso','e0_sso_max')
             ->where('amp_code',$id)
             ->get('epe0')
             ->row();
         return $rs;
-    } public function get_e1_sso($amp_code,$code506){
+    }
+
+    public function get_e1_sso($amp_code,$code506){
         $rs = $this->db
             ->select_max('e1_sso',' e1_sso_max')
             ->where('amp_code',$amp_code)
@@ -482,14 +488,18 @@ class Patient_model extends CI_Model {
             ->get('epe0')
             ->row();
         return $rs;
-    }public function get_e0_hosp($hospcode){
+    }
+
+    public function get_e0_hosp($hospcode){
         $rs = $this->db
             ->select_max('e0_hosp','e0_hosp_max')
             ->where('hospcode',$hospcode)
             ->get('epe0')
             ->row();
         return $rs;
-    } public function get_e1_hosp($hospcode,$code506){
+    }
+
+    public function get_e1_hosp($hospcode,$code506){
         $rs = $this->db
             ->select_max('e1_hosp','e1_hosp_max')
             ->where('hospcode',$hospcode)

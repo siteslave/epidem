@@ -21,9 +21,7 @@ class Users extends CI_Controller
         $this->layout->setLayout('login_layout');
 
         //load model
-        $this->load->model('User_model', 'user');
-        $this->load->model('Security_model', 'ss');
-
+        $this->load->model('User_model', 'users');
     }
 
     //index action
@@ -32,13 +30,48 @@ class Users extends CI_Controller
         $this->login();
     }
     public function login(){
-        if($this->session->userdata('status')){
-            redirect('/', 'refresh');
-        }else{
-        $this->layout->view('users/login_view');
+        if($this->session->userdata('username'))
+        {
+            redirect(site_url(), 'refresh');
+        }
+        else
+        {
+            $this->layout->view('users/login_view');
         }
     }
-    public function user_session(){
+
+    public function do_login()
+    {
+        $username = $this->input->post('username');
+        $password = $this->input->post('password');
+
+        $users = $this->users->do_auth($username, $password);
+        if($users)
+        {
+            $data = array(
+                'username'      => $users->username,
+                'user_id'       => $users->id,
+                'hospcode'      => $users->hospcode,
+                'hospname'      => $users->hospname,
+                'user_level'    => $users->user_level,
+                'user_type'     => $users->user_type,
+                'fullname'      => $users->name,
+                'hserv'         => $this->get_hserv($users->hospcode),
+                'amp_code'      => $this->get_amp_code($users->hospcode)
+            );
+
+            $this->session->set_userdata($data);
+
+            redirect(site_url());
+        }
+        else
+        {
+            $data = array('error' => 1);
+            $this->layout->view('users/login_view', $data);
+        }
+    }
+
+    /*public function user_session(){
         $json=$this->input->get('datajson');
         $data = array(
             'username' => $json['rows']['username'],
@@ -55,29 +88,26 @@ class Users extends CI_Controller
         $this->session->set_userdata($data);
         $json = '{"success": true}';
         render_json($json);
-        }
+        }*/
     public function user_profile()
     {
-       $data['user']= $this->ss->encode('admin');
-       $data['pass']= $this->ss->encode('1234');
-
-        $this->layout->setLayout('default_layout');
-        $this->layout->view('users/user_profile_view',$data);
+        #$this->layout->setLayout('default_layout');
+        #$this->layout->view('users/user_profile_view',$data);
     }
-    public function get_hserv ($off_id){
+    public function get_hserv ($hospcode){
         //echo $off_id;
-        $rs=$this->user->get_hserv($off_id);
+        $rs=$this->users->get_hserv($hospcode);
         return $rs->hserv;
         }
-    public function get_amp_code ($off_id){
+    public function get_amp_code ($hospcode){
         //echo $off_id;
-        $rs=$this->user->get_amp_code($off_id);
+        $rs=$this->users->get_amp_code($hospcode);
         return $rs->amp_code;
         }
     public function logout()
     {
         $this->session->sess_destroy();
-        redirect('/','refresh');
+        redirect(site_url(),'refresh');
     }
     public function access_denied(){
         $json = '{"success": false, "msg": "Access denied, please login."}';
