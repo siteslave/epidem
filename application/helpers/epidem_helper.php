@@ -243,7 +243,30 @@ if(!function_exists('get_hospital_name'))
             ->row();
         return $rs ? $rs->name : '-';
     }
-
+}
+if(!function_exists('get_nation_nhso_name'))
+{
+    function get_nation_nhso_name($code)
+    {
+        $ci =& get_instance();
+        $rs = $ci->db
+            ->where(array('code' => $code))
+            ->get('ref_nhso_nation')
+            ->row();
+        return $rs ? $rs->name : '-';
+    }
+}
+if(!function_exists('get_nation_506_name'))
+{
+    function get_nation_506_name($code)
+    {
+        $ci =& get_instance();
+        $rs = $ci->db
+            ->where(array('code' => $code))
+            ->get('ref_nation')
+            ->row();
+        return $rs ? $rs->name : '-';
+    }
 }
 /**
 * Get current age

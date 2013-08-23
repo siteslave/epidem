@@ -39,6 +39,27 @@ class Patient_model extends CI_Model {
         return $rs;
     }
 
+    public function get_list_filter($hospcode, $s, $e, $start, $limit)
+    {
+        $result = $this->db
+            ->where('hospcode',$hospcode)
+            ->where('datesick >=', $s)
+            ->where('datesick <=', $e)
+            ->limit($limit, $start)
+            ->get('epe0')
+            ->result();
+        return $result;
+    }
+
+    public function get_list_total_filter($hospcode, $s, $e){
+        $rs = $this->db
+            ->where('hospcode',$hospcode)
+            ->where('datesick >=', $s)
+            ->where('datesick <=', $e)
+            ->count_all_results('epe0');
+        return $rs;
+    }
+
     public function get_list_total_ssj(){
         $rs = $this->db
             ->where('e0 IS NOT NULL')

@@ -138,10 +138,12 @@ $(function () {
                         '<td>' + app.strip(v.code506, 45) + '</td>' +
                         '<td>' + v.hospcode + ' ' + app.strip(v.hospname, 20) + '</td>' +
                         '<td><a href="javascript:void(0);" class="btn btn-small btn-success" data-id="' + v.id + '" ' +
-                        'data-name="btn_get_detail"><i class="glyphicon glyphicon-edit"></i></a></td>' +
+                        'data-name="btn_get_detail" title="ดูข้อมูล" data-rel="tooltip"><i class="glyphicon glyphicon-edit"></i></a></td>' +
                         '</tr>'
                 );
             });
+
+            app.set_runtime();
         }
         else {
             $('#tbl_list > tbody').append('<tr><td colspan="11">ไม่พบรายการ</td></tr>');
@@ -355,15 +357,17 @@ $(function () {
                         '<td>' + v.code506 + ' ' + app.strip(v.code506_name, 40) + '</td>' +
                         '<td>' + v.hospcode + ' ' + app.strip(v.hospname, 20) + '</td>' +
                         '<td><div class="btn-group">' +
-                        '<a href="javascript:void(0);" class="btn btn-default" data-id="' + v.id + '" data-code506="' + v.code506 + '" ' +
-                        'data-name="btn_approve" data-ptname="' + v.name + '"><i class="glyphicon glyphicon-check"></i></a>' +
-                        '<a href="javascript:void(0);" class="btn btn-default" data-id="' + v.id + '"' +
-                        'data-name="btn_detail" ><i class="glyphicon glyphicon-info-sign"></i></a>' +
+                        '<a href="javascript:void(0);" class="btn btn-success" data-id="' + v.id + '" data-code506="' + v.code506 + '" ' +
+                        'data-name="btn_approve" data-ptname="' + v.name + '" title="ยืนยันข้อมูล" data-rel="tooltip"><i class="glyphicon glyphicon-check"></i></a>' +
+                        '<a href="javascript:void(0);" class="btn btn-success" data-id="' + v.id + '" title="ดูข้อมูล"' +
+                        'data-name="btn_detail" data-rel="tooltip"><i class="glyphicon glyphicon-info-sign"></i></a>' +
                         '</div></td>' +
                         '</tr>'
                 );
                 i++;
             });
+
+            app.set_runtime();
         }
         else {
             $('#tbl_waiting_list > tbody').append('<tr><td colspan="8">ไม่พบรายการ</td></tr>');
