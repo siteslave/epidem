@@ -477,4 +477,4 @@ class Patient_model extends CI_Model {
 }
 
 /* End of file patient_model.php */
-/* Location: ./application/models/patient_model.php */
+/* Location: ./applcation/models/patient_model.php */
