@@ -121,13 +121,13 @@ class Ampur extends CI_Controller
                     $obj->hn            = $rs->hn;
                     $obj->mstatus       = $rs->marietal;
                     $obj->nation        = $rs->nation;
-                    $obj->nmepate       = $rs->nmepate;
+                    $obj->nmepat       = $rs->nmepat;
                     $obj->occupation    = $rs->occupat;
                     $obj->date_serv     = to_thai_date($rs->datesick);
                     $obj->ptstatus      = $rs->result;
                     $obj->date_death    = to_thai_date($rs->datedeath);
                     $obj->ptstatus_code = $rs->result;
-                    $obj->illdate       = to_thai_date($rs->datefine);
+                    $obj->illdate       = to_thai_date($rs->datedefine);
                     $obj->patient_type  = $rs->type;
                     $obj->service_place = $rs->hospital;
                     $obj->school        = $rs->school;
