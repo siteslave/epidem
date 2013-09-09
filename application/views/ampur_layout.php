@@ -79,7 +79,13 @@
             </li>
             <li class="">
                 <a href="<?=site_url('/reports')?>" class=""><i class="glyphicon glyphicon-print"></i> รายงาน </a>
-
+            </li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-cog"></i> เครื่องมือ <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li class="dropdown-header">TOOLS</li>
+                    <li><a href="<?=site_url('exports')?>"><i class="glyphicon glyphicon-cloud-download"></i> ส่งออกข้อมูล (R506)</a></li>
+                </ul>
             </li>
         </ul>
         <ul class="nav navbar-nav pull-right">

@@ -82,7 +82,7 @@
                 <ul class="dropdown-menu">
                     <li class="dropdown-header">TOOLS</li>
                     <li><a href="<?=site_url('patients/imports')?>"><i class="glyphicon glyphicon-cloud-upload"></i> นำเข้าผู้ป่วยจาก 43 แฟ้ม</a></li>
-
+                    <li><a href="<?=site_url('exports')?>"><i class="glyphicon glyphicon-cloud-download"></i> ส่งออกข้อมูล (R506)</a></li>
                 </ul>
             </li>
             <li class="">

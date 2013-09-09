@@ -55,11 +55,6 @@ class Patients extends CI_Controller
 
         $this->layout->view('patients/index_view', $data);
     }
- 
-    public function imports()
-    {
-        $this->layout->view('patients/import_view');
-    }
 
     public function get_list()
     {
@@ -611,7 +606,6 @@ class Patients extends CI_Controller
         $rs=$this->patient->get_e1_hosp($hospcode,$code506);
         return $rs->e1_hosp_max;
     }
-
 }
 
 /* End of file patients.php */

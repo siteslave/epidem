@@ -23,10 +23,6 @@
                     <button type="button" class="btn btn-primary" id="btn_get_list">
                         <i class="glyphicon glyphicon-search"></i> แสดง
                     </button>
-                    <button type="button" class="btn btn-success" id="btn_get_list">
-                        <i class="glyphicon glyphicon-cloud-upload"></i> ส่งออก
-                    </button>
-
                 </div>
                 |
                 <label>ค้นหา</label>
