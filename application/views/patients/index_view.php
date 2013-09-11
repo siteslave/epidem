@@ -13,12 +13,20 @@
         <div class="navbar navbar-default">
             <form action="#" class="navbar-form">
                 <label>ตั้งแต่วันที่</label>
-                <input type="text" id="txt_start_date" data-type="date" class="form-control"
+                <input type="text" id="txt_query_start_date" data-type="date" class="form-control"
                        placeholder="วว/ดด/ปปปป" title="เช่น 01/01/2556" data-rel="tooltip" style="width: 110px;">
 
                 <label>ถึงวันที่</label>
-                <input type="text" id="txt_end_date" data-type="date" class="form-control"
+                <input type="text" id="txt_query_end_date" data-type="date" class="form-control"
                        placeholder="วว/ดด/ปปปป" style="width: 110px;" title="เช่น 31/01/2556" data-rel="tooltip">
+
+                <select class="form-control" style="width: 130px;" id="sl_query_ptstatus">
+                    <option value="">ทั้งหมด</option>
+                    <option value="1">หาย</option>
+                    <option value="2">เสียชีวิต</option>
+                    <option value="3">ยังรักษาอยู่</option>
+                </select>
+
                 <div class="btn-group">
                     <button type="button" class="btn btn-primary" id="btn_get_list">
                         <i class="glyphicon glyphicon-search"></i> แสดง
@@ -28,7 +36,7 @@
                 <label>ค้นหา</label>
                 <input type="text" id="txt_query" class="form-control"
                        placeholder="ระบุสิ่งที่ต้องการค้นหา" title="หมายเลขบัตรประชาชน, ชื่อ, HN"
-                       data-rel="tooltip" style="width: 250px;">
+                       data-rel="tooltip" style="width: 210px;">
 
                 <button type="button" class="btn btn-primary" id="btn_search">
                     <i class="glyphicon glyphicon-search"></i>
@@ -45,6 +53,7 @@
             <tr>
                 <th>E0</th>
                 <th>E1</th>
+                <th>HN</th>
                 <th>ชื่อ - สกุล</th>
                 <th>สัญชาติ</th>
                 <th>ที่อยู่ขณะป่วย</th>

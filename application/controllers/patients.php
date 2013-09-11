@@ -60,13 +60,21 @@ class Patients extends CI_Controller
     {
         $start = $this->input->post('start');
         $stop = $this->input->post('stop');
+        $p = $this->input->post('p');
 
         $start = empty($start) ? 0 : $start;
         $stop = empty($stop) ? 25 : $stop;
 
         $limit = (int) $stop - (int) $start;
 
-        $rs = $this->patient->get_list($this->hospcode,$start, $limit);
+        if(empty($p))
+        {
+            $rs = $this->patient->get_list($this->hospcode,$start, $limit);
+        }
+        else
+        {
+            $rs = $this->patient->get_list_by_ptstatus($this->hospcode,$start, $limit, $p);
+        }
 
         if($rs)
         {
@@ -81,6 +89,8 @@ class Patients extends CI_Controller
 
                 $obj->id        =$r->id;
                 $obj->name      = $r->name;
+                $obj->hn        = $r->hn;
+                $obj->cid       = $r->cid;
                 $obj->datesick  = to_thai_date($r->datesick);
                 $obj->address   = $r->address . ' ' . get_address($r->addrcode);
                 $obj->diag      = $r->icd10 . ' ' . $this->basic->get_diagname($r->icd10);
@@ -104,8 +114,17 @@ class Patients extends CI_Controller
 
     public function get_list_total()
     {
+        $p = $this->input->post('p');
 
-        $total = $this->patient->get_list_total($this->hospcode);
+        if(empty($p))
+        {
+            $total = $this->patient->get_list_total($this->hospcode);
+        }
+        else
+        {
+            $total = $this->patient->get_list_total_by_ptstatus($this->hospcode, $p);
+        }
+
 
         $json = '{"success": true, "total": '.$total.'}';
         render_json($json);
@@ -119,7 +138,17 @@ class Patients extends CI_Controller
         $s = to_mysql_date($s);
         $e = to_mysql_date($e);
 
-        $total = $this->patient->get_list_total_filter($this->hospcode, $s, $e);
+        $p = $this->input->post('p');
+
+        if(empty($p))
+        {
+            $total = $this->patient->get_list_total_filter($this->hospcode, $s, $e);
+        }
+        else
+        {
+            $total = $this->patient->get_list_total_filter_by_ptstatus($this->hospcode, $s, $e, $p);
+        }
+
 
         $json = '{"success": true, "total": '.$total.'}';
         render_json($json);
@@ -129,6 +158,7 @@ class Patients extends CI_Controller
     {
         $start = $this->input->post('start');
         $stop = $this->input->post('stop');
+        $p = $this->input->post('p');
 
         $s = $this->input->post('s');
         $e = $this->input->post('e');
@@ -141,7 +171,15 @@ class Patients extends CI_Controller
 
         $limit = (int) $stop - (int) $start;
 
-        $rs = $this->patient->get_list_filter($this->hospcode, $s, $e, $start, $limit);
+        if(empty($p))
+        {
+            $rs = $this->patient->get_list_filter($this->hospcode, $s, $e, $start, $limit);
+        }
+        else
+        {
+            $rs = $this->patient->get_list_filter_by_ptstatus($this->hospcode, $s, $e, $start, $limit, $p);
+        }
+
 
         if($rs)
         {
@@ -154,8 +192,10 @@ class Patients extends CI_Controller
                 $obj->e0        = $r->e0_hosp;
                 $obj->e1        = $r->e1_hosp;
 
-                $obj->id        =$r->id;
+                $obj->id        = $r->id;
                 $obj->name      = $r->name;
+                $obj->cid       = $r->cid;
+                $obj->hn        = $r->hn;
                 $obj->datesick  = to_thai_date($r->datesick);
                 $obj->address   = $r->address . ' ' . get_address($r->addrcode);
                 $obj->diag      = $r->icd10 . ' ' . $this->basic->get_diagname($r->icd10);
@@ -605,6 +645,54 @@ class Patients extends CI_Controller
     {
         $rs=$this->patient->get_e1_hosp($hospcode,$code506);
         return $rs->e1_hosp_max;
+    }
+
+    public function search()
+    {
+        $query = $this->input->post('q');
+
+        if(empty($query) || strlen($query) < 2)
+        {
+            $json = '{"success": false, "msg": "กรุณาระบุคำค้นหา"}';
+        }
+        else
+        {
+            $rs = $this->patient->search($this->hospcode, $query);
+
+            if($rs)
+            {
+                $arr_result = array();
+
+                foreach($rs as $r)
+                {
+                    $obj = new stdClass();
+
+                    $obj->e0        = $r->e0_hosp;
+                    $obj->e1        = $r->e1_hosp;
+
+                    $obj->id        =$r->id;
+                    $obj->name      = $r->name;
+                    $obj->hn        = $r->hn;
+                    $obj->cid       = $r->cid;
+                    $obj->datesick  = to_thai_date($r->datesick);
+                    $obj->address   = $r->address . ' ' . get_address($r->addrcode);
+                    $obj->diag      = $r->icd10 . ' ' . $this->basic->get_diagname($r->icd10);
+                    $obj->code506   = $r->disease . ' ' . $this->basic->get_code506name($r->disease);
+                    $obj->nation    = get_nation_nhso_name($r->nation);
+                    $obj->ptstatus  = $r->result;
+
+                    $arr_result[] = $obj;
+                }
+
+                $rows = json_encode($arr_result);
+                $json = '{"success": true, "rows": '.$rows.'}';
+            }
+            else
+            {
+                $json = '{"success": false, "msg": "No result."}';
+            }
+        }
+        render_json($json);
     }
 }
 

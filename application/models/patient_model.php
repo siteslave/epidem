@@ -31,10 +31,28 @@ class Patient_model extends CI_Model {
             ->result();
         return $result;
     }
+    public function get_list_by_ptstatus($hospcode,$start, $limit, $p)
+    {
+        $result = $this->db
+            ->where('hospcode',$hospcode)
+            ->where('result', $p)
+            ->limit($limit, $start)
+            ->get('epe0')
+            ->result();
+        return $result;
+    }
 
     public function get_list_total($hospcode){
         $rs = $this->db
             ->where('hospcode',$hospcode)
+            ->count_all_results('epe0');
+        return $rs;
+    }
+
+    public function get_list_total_by_ptstatus($hospcode, $p){
+        $rs = $this->db
+            ->where('hospcode',$hospcode)
+            ->where('result', $p)
             ->count_all_results('epe0');
         return $rs;
     }
@@ -45,6 +63,20 @@ class Patient_model extends CI_Model {
             ->where('hospcode',$hospcode)
             ->where('datesick >=', $s)
             ->where('datesick <=', $e)
+            //->where('result', $p)
+            ->limit($limit, $start)
+            ->get('epe0')
+            ->result();
+        return $result;
+    }
+
+    public function get_list_filter_by_ptstatus($hospcode, $s, $e, $start, $limit, $p)
+    {
+        $result = $this->db
+            ->where('hospcode',$hospcode)
+            ->where('datesick >=', $s)
+            ->where('datesick <=', $e)
+            ->where('result', $p)
             ->limit($limit, $start)
             ->get('epe0')
             ->result();
@@ -56,6 +88,16 @@ class Patient_model extends CI_Model {
             ->where('hospcode',$hospcode)
             ->where('datesick >=', $s)
             ->where('datesick <=', $e)
+            //->where('result', $p)
+            ->count_all_results('epe0');
+        return $rs;
+    }
+    public function get_list_total_filter_by_ptstatus($hospcode, $s, $e, $p){
+        $rs = $this->db
+            ->where('hospcode',$hospcode)
+            ->where('datesick >=', $s)
+            ->where('datesick <=', $e)
+            ->where('result', $p)
             ->count_all_results('epe0');
         return $rs;
     }
@@ -473,6 +515,21 @@ class Patient_model extends CI_Model {
             ->get('epe0')
             ->row();
         return $rs;
+    }
+
+    public function search($hospcode, $q)
+    {
+        $sql = '
+            select * from epe0
+            where hospcode="'. $hospcode .'"
+            and (cid="'. $q .'"
+            or name like "%'. $q .'%"
+            or hn="'. $q .'")
+        ';
+
+        $query = $this->db->query($sql);
+
+        return $query->result();
     }
 }
 

@@ -45,13 +45,87 @@ class Ampur extends CI_Controller
     {
         $start = $this->input->post('start');
         $stop = $this->input->post('stop');
+        $p = $this->input->post('p');
 
         $start = empty($start) ? 0 : $start;
         $stop = empty($stop) ? 25 : $stop;
 
         $limit = (int) $stop - (int) $start;
 
-        $rs = $this->ampur->get_list($this->amp_code, $start, $limit);
+        if(empty($p))
+        {
+            $rs = $this->ampur->get_list($this->amp_code, $start, $limit);
+        }
+        else
+        {
+            $rs = $this->ampur->get_list_by_ptstatus($this->amp_code, $start, $limit, $p);
+        }
+
+        if($rs)
+        {
+            $arr_result = array();
+
+            foreach($rs as $r)
+            {
+                $obj = new stdClass();
+
+                $obj->e0        = $r->e0_sso;
+                $obj->e1        = $r->e1_sso;
+
+                $obj->id        = $r->id;
+                $obj->cid       = $r->cid;
+                $obj->name      = $r->name;
+                $obj->datesick  = to_thai_date($r->datesick);
+                $obj->address   = $r->address . ' ' . get_address($r->addrcode);
+                $obj->diag      = $r->icd10 . ' ' . $this->basic->get_diagname($r->icd10);
+                $obj->code506   = $r->disease . ' ' . $this->basic->get_code506name($r->disease);
+                $obj->age       = count_age($r->birth);
+                $obj->birth     = to_thai_date($r->birth);
+                $obj->ptstatus  = $r->result;
+                $obj->hospcode  = $r->hospcode;
+                $obj->hospname  = get_hospital_name($r->hospcode);
+
+                $arr_result[] = $obj;
+            }
+
+            $rows = json_encode($arr_result);
+            $json = '{"success": true, "rows": '.$rows.'}';
+        }
+        else
+        {
+            $json = '{"success": false, "msg": "No result."}';
+        }
+
+        render_json($json);
+    }
+
+    public function get_list_filter()
+    {
+        $start = $this->input->post('start');
+        $stop = $this->input->post('stop');
+
+        $s = $this->input->post('s');
+        $e = $this->input->post('e');
+
+        $s = to_mysql_date($s);
+        $e = to_mysql_date($e);
+
+        $p = $this->input->post('p');
+
+        $start = empty($start) ? 0 : $start;
+        $stop = empty($stop) ? 25 : $stop;
+
+        $limit = (int) $stop - (int) $start;
+
+        if(empty($p))
+        {
+            $rs = $this->ampur->get_list_filter($this->amp_code, $s, $e, $start, $limit);
+        }
+        else
+        {
+            $rs = $this->ampur->get_list_filter_by_ptstatus($this->amp_code, $s, $e, $start, $limit, $p);
+        }
+
 
         if($rs)
         {
@@ -93,7 +167,40 @@ class Ampur extends CI_Controller
 
     public function get_list_total()
     {
-        $total = $this->ampur->get_list_total($this->amp_code);
+        $p = $this->input->post('p');
+
+        if(empty($p))
+        {
+            $total = $this->ampur->get_list_total($this->amp_code);
+        }
+        else
+        {
+            $total = $this->ampur->get_list_total_by_ptstatus($this->amp_code, $p);
+        }
+
+
+        $json = '{"success": true, "total": '.$total.'}';
+        render_json($json);
+    }
+
+    public function get_list_total_filter()
+    {
+        $p = $this->input->post('p');
+        $s = $this->input->post('s');
+        $e = $this->input->post('e');
+
+        $s = to_mysql_date($s);
+        $e = to_mysql_date($e);
+
+        if(empty($p))
+        {
+            $total = $this->ampur->get_list_total_filter($this->amp_code, $s, $e);
+        }
+        else
+        {
+            $total = $this->ampur->get_list_total_filter_by_ptstatus($this->amp_code, $s, $e, $p);
+        }
+
 
         $json = '{"success": true, "total": '.$total.'}';
         render_json($json);
@@ -174,9 +281,19 @@ class Ampur extends CI_Controller
 
     public function get_waiting_list_total()
     {
-        $rs = $this->ampur->get_waiting_list_total($this->amp_code);
+        $p = $this->input->post('p');
 
-        $json = '{"success": true, "total": ' . $rs . '}';
+        if(empty($p))
+        {
+            $total = $this->ampur->get_waiting_list_total($this->amp_code);
+        }
+        else
+        {
+            $total = $this->ampur->get_waiting_list_total_by_ptstatus($this->amp_code, $p);
+        }
+
+
+        $json = '{"success": true, "total": ' . $total . '}';
         render_json($json);
     }
 
@@ -184,13 +301,21 @@ class Ampur extends CI_Controller
     {
         $start = $this->input->post('start');
         $stop = $this->input->post('stop');
+        $p = $this->input->post('p');
 
         $start = empty($start) ? 0 : $start;
         $stop = empty($stop) ? 25 : $stop;
 
         $limit = (int) $stop - (int) $start;
 
-        $rs = $this->ampur->get_waiting_list($this->amp_code, $start, $limit);
+        if(empty($p))
+        {
+            $rs = $this->ampur->get_waiting_list($this->amp_code, $start, $limit);
+        }
+        else
+        {
+            $rs = $this->ampur->get_waiting_list_by_ptstatus($this->amp_code, $start, $limit, $p);
+        }
 
         if($rs)
         {
@@ -253,4 +378,80 @@ class Ampur extends CI_Controller
         render_json($json);
     }
 
+
+    public function search()
+    {
+        $query = $this->input->post('q');
+
+        if(empty($query) || strlen($query) < 2)
+        {
+            $json = '{"success": false, "msg": "กรุณาระบุคำค้นหา"}';
+        }
+        else
+        {
+            $rs = $this->ampur->search($this->amp_code, $query);
+
+            if($rs)
+            {
+                $arr_result = array();
+
+                foreach($rs as $r)
+                {
+                    $obj = new stdClass();
+
+                    $obj->e0        = $r->e0_sso;
+                    $obj->e1        = $r->e1_sso;
+
+                    $obj->id        = $r->id;
+                    $obj->cid       = $r->cid;
+                    $obj->name      = $r->name;
+                    $obj->datesick  = to_thai_date($r->datesick);
+                    $obj->address   = $r->address . ' ' . get_address($r->addrcode);
+                    $obj->diag      = $r->icd10 . ' ' . $this->basic->get_diagname($r->icd10);
+                    $obj->code506   = $r->disease . ' ' . $this->basic->get_code506name($r->disease);
+                    $obj->age       = count_age($r->birth);
+                    $obj->birth     = to_thai_date($r->birth);
+                    $obj->ptstatus  = $r->result;
+                    $obj->hospcode  = $r->hospcode;
+                    $obj->hospname  = get_hospital_name($r->hospcode);
+
+                    $arr_result[] = $obj;
+                }
+
+                $rows = json_encode($arr_result);
+                $json = '{"success": true, "rows": '.$rows.'}';
+            }
+            else
+            {
+                $json = '{"success": false, "msg": "No result."}';
+            }
+
+        }
+
+        render_json($json);
+    }
+
+    public function do_import()
+    {
+        $items = $this->input->post('items');
+
+        if(!empty($items))
+        {
+            foreach($items as $i)
+            {
+                $e0 = ($this->ampur->get_e0_sso($this->amp_code)) + 1;
+                $e1 = ($this->ampur->get_e1_sso($this->amp_code, $i['code506'])) + 1;
+
+                $this->ampur->do_approve($i['id'], $e0, $e1);
+            }
+
+            $json = '{"success": true}';
+        }
+        else
+        {
+            $json = '{"success": false, "msg": "ไม่พบรหัสที่ต้องการลบ"}';
+        }
+
+        render_json($json);
+    }
 }

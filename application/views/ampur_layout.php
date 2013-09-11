@@ -85,6 +85,7 @@
                 <ul class="dropdown-menu">
                     <li class="dropdown-header">TOOLS</li>
                     <li><a href="<?=site_url('exports')?>"><i class="glyphicon glyphicon-cloud-download"></i> ส่งออกข้อมูล (R506)</a></li>
+                    <li><a href="<?=site_url('maps')?>"><i class="glyphicon glyphicon-globe"></i> ระบบ GIS งานระบาดวิทยา</a></li>
                 </ul>
             </li>
         </ul>

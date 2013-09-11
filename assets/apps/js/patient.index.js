@@ -22,11 +22,12 @@ $(function () {
     };
 
     patient.ajax = {
-        get_list: function (start, stop, cb) {
+        get_list: function (ptstatus, start, stop, cb) {
             var url = '/patients/get_list',
                 params = {
                     start: start,
-                    stop: stop
+                    stop: stop,
+                    p: ptstatus
                 }
 
             app.ajax(url, params, function (err, data) {
@@ -34,13 +35,25 @@ $(function () {
             });
         },
 
-        get_list_filter: function (s, e, start, stop, cb) {
+        search: function (q, cb) {
+            var url = '/patients/search',
+                params = {
+                    q: q
+                }
+
+            app.ajax(url, params, function (err, data) {
+                err ? cb(err) : cb(null, data);
+            });
+        },
+
+        get_list_filter: function (s, e, start, stop, ptstatus, cb) {
             var url = '/patients/get_list_filter',
                 params = {
                     start: start,
                     stop: stop,
                     s: s,
-                    e: e
+                    e: e,
+                    p: ptstatus
                 }
 
             app.ajax(url, params, function (err, data) {
@@ -48,20 +61,23 @@ $(function () {
             });
         },
 
-        get_list_total: function (cb) {
+        get_list_total: function (ptstatus, cb) {
             var url = '/patients/get_list_total',
-                params = {}
+                params = {
+                    p: ptstatus
+                }
 
             app.ajax(url, params, function (err, data) {
                 err ? cb(err) : cb(null, data);
             });
         },
 
-        get_list_total_filter: function (s, e, cb) {
+        get_list_total_filter: function (s, e, ptstatus, cb) {
             var url = '/patients/get_list_total_filter',
                 params = {
                     s: s,
-                    e: e
+                    e: e,
+                    p: ptstatus
                 }
 
             app.ajax(url, params, function (err, data) {
@@ -201,7 +217,7 @@ $(function () {
                         '<td>' + v.e0 + '</td>' +
                         '<td>' + v.e1 + '</td>' +
                         //'<td>' + v.pe0 + '</td>' +
-                        //'<td>' + v.pe1 + '</td>' +
+                        '<td>' + v.hn + '</td>' +
                         '<td>' + v.name + '</td>' +
                         '<td>' + v.nation + '</td>' +
                         '<td>' + app.strip(v.address, 40) + '</td>' +
@@ -215,18 +231,20 @@ $(function () {
             });
         }
         else {
-            $('#tbl_patient_list > tbody').append('<tr><td colspan="9">ไม่พบรายการ</td></tr>');
+            $('#tbl_patient_list > tbody').append('<tr><td colspan="10">ไม่พบรายการ</td></tr>');
         }
     };
 
-    patient.get_list = function () {
+    patient.get_list = function (ptstatus) {
+
+        $('#main_paging').fadeIn('slow');
 
         $('#tbl_patient_list > tbody').empty();
 
-        patient.ajax.get_list_total(function (err, data) {
+        patient.ajax.get_list_total(ptstatus, function (err, data) {
             if (err) {
                 app.alert(err);
-                $('#tbl_patient_list > tbody').append('<tr><td colspan="8">ไม่พบรายการ</td></tr>');
+                $('#tbl_patient_list > tbody').append('<tr><td colspan="10">ไม่พบรายการ</td></tr>');
             } else {
                 $('#spn_total').html(app.add_commars_with_out_decimal(data.total));
                 $('#main_paging').paging(data.total, {
@@ -236,10 +254,10 @@ $(function () {
                     page: app.get_cookie('patient_index_paging'),
                     onSelect: function (page) {
                         app.set_cookie('patient_index_paging', page);
-                        patient.ajax.get_list(this.slice[0], this.slice[1], function (err, data) {
+                        patient.ajax.get_list(ptstatus, this.slice[0], this.slice[1], function (err, data) {
                             if (err) {
                                 app.alert(err);
-                                $('#tbl_patient_list > tbody').append('<tr><td colspan="8">ไม่พบรายการ</td></tr>');
+                                $('#tbl_patient_list > tbody').append('<tr><td colspan="10">ไม่พบรายการ</td></tr>');
                             } else {
                                 patient.set_list(data);
                             }
@@ -305,11 +323,13 @@ $(function () {
         });
     };
 
-    patient.get_list_filter = function (start_date, end_date) {
+    patient.get_list_filter = function (start_date, end_date, ptstatus) {
+
+        $('#main_paging').fadeIn('slow');
 
         $('#tbl_patient_list > tbody').empty();
 
-        patient.ajax.get_list_total_filter(start_date, end_date, function (err, data) {
+        patient.ajax.get_list_total_filter(start_date, end_date, ptstatus, function (err, data) {
             if (err) {
                 app.alert(err);
                 $('#tbl_patient_list > tbody').append('<tr><td colspan="8">ไม่พบรายการ</td></tr>');
@@ -322,7 +342,7 @@ $(function () {
                     page: app.get_cookie('patient_filter_paging'),
                     onSelect: function (page) {
                         app.set_cookie('patient_filter_paging', page);
-                        patient.ajax.get_list_filter(start_date, end_date, this.slice[0], this.slice[1], function (err, data) {
+                        patient.ajax.get_list_filter(start_date, end_date, ptstatus, this.slice[0], this.slice[1], function (err, data) {
                             if (err) {
                                 app.alert(err);
                                 $('#tbl_patient_list > tbody').append('<tr><td colspan="8">ไม่พบรายการ</td></tr>');
@@ -551,7 +571,7 @@ $(function () {
             _.each(data.rows, function (v) {
                 var tr_death = v.ptstatus == '2' ? 'class="danger"' : '';
                 //var chk_import = v.RECORD_STATUS == '1' || v.RECORD_STATUS == '2' ? '<input type="checkbox" disabled>' : '<input type="checkbox" data-name="chk_import" data-id="' + v.ID + '">';
-                var ptstatus = v.result == '1' ? 'หาย' : v.result == '2' ? 'ตาย' : v.result == '3' ? 'ยังรักษาอยู่' : v.result == '9' ? 'ไม่ทราบ' : v.ptstatus == '3' ? 'หาย' : '-';
+                var ptstatus = v.result == '1' ? 'หาย' : v.result == '2' ? 'เสียชีวิต' : v.result == '3' ? 'ยังรักษาอยู่' : v.result == '9' ? 'ไม่ทราบ' : v.ptstatus == '3' ? 'หาย' : '-';
                 $('#tbl_waiting_list > tbody').append(
                     '<tr ' + tr_death + '>' +
                 //'<td>' + i + '</td>' +
@@ -1073,13 +1093,17 @@ $(function () {
     });
 
     $('#btn_get_list').on('click', function(e) {
-        var s = $('#txt_start_date').val(),
-            e = $('#txt_end_date').val();
 
-        if(s || e) {
-            patient.get_list_filter(s, e);
+        e.preventDefault();
+
+        var start_date = $('#txt_query_start_date').val(),
+            end_date = $('#txt_query_end_date').val(),
+            ptstatus = $('#sl_query_ptstatus').val();
+
+        if(start_date && end_date) {
+            patient.get_list_filter(start_date, end_date, ptstatus);
         } else {
-            patient.get_list();
+            patient.get_list(ptstatus);
         }
 
     });
@@ -1091,5 +1115,31 @@ $(function () {
 
         $('#spn_wait').html(app.add_commars_with_out_decimal(v.total));
 
+    });
+
+    // search
+    $('#btn_search').on('click', function(e) {
+        e.preventDefault();
+
+        var query = $('#txt_query').val();
+
+        if(query)
+        {
+            patient.ajax.search(query, function(err, data) {
+                if(err)
+                {
+                    app.alert(err);
+                }
+                else
+                {
+                    $('#main_paging').fadeOut('slow');
+                    patient.set_list(data);
+                }
+            });
+        }
+        else
+        {
+            app.alert('กรุณาระบุคำค้นหา');
+        }
     });
 });

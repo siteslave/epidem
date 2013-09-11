@@ -3,7 +3,7 @@
     <li class="active">นำเข้าข้อมูล</li>
 </ul>
 
-<ul class="nav nav-pills">
+<ul class="nav nav-tabs">
     <li class="active"><a href="#tab_patient" data-toggle="tab">ทะเบียนทั้งหมด <span class="badge" id="spn_total">0</span></a></li>
     <li><a href="#tab_wait" data-toggle="tab">รอตรวจสอบ <span class="badge" id="spn_wait">0</span></a></li>
 </ul>
@@ -13,20 +13,38 @@
         <div class="navbar navbar-default">
             <form action="#" class="navbar-form">
                 <label>ตั้งแต่วันที่</label>
-                <input type="text" id="txt_start_date" data-type="date" class="form-control"
-                       placeholder="dd/mm/yyyy" title="เช่น 01/01/2556" data-rel="tooltip" style="width: 150px;">
+                <input type="text" id="txt_query_start_date" data-type="date" class="form-control"
+                       placeholder="วว/ดด/ปปปป" title="เช่น 01/01/2556" data-rel="tooltip" style="width: 110px;">
 
                 <label>ถึงวันที่</label>
-                <input type="text" id="txt_end_date" data-type="date" class="form-control"
-                       placeholder="dd/mm/yyyy" style="width: 150px;" title="เช่น 31/01/2556" data-rel="tooltip">
+                <input type="text" id="txt_query_end_date" data-type="date" class="form-control"
+                       placeholder="วว/ดด/ปปปป" style="width: 110px;" title="เช่น 31/01/2556" data-rel="tooltip">
+
+                <select class="form-control" style="width: 130px;" id="sl_query_ptstatus">
+                    <option value="">ทั้งหมด</option>
+                    <option value="1">หาย</option>
+                    <option value="2">เสียชีวิต</option>
+                    <option value="3">ยังรักษาอยู่</option>
+                </select>
+
                 <div class="btn-group">
                     <button type="button" class="btn btn-primary" id="btn_get_list">
                         <i class="glyphicon glyphicon-search"></i> แสดง
                     </button>
-                    <button type="button" class="btn btn-primary" id="btn_export">
-                        <i class="glyphicon glyphicon-cloud-download"></i> ส่งออก
-                    </button>
                 </div>
+                |
+                <label>ค้นหา</label>
+                <input type="text" id="txt_query" class="form-control"
+                       placeholder="ระบุสิ่งที่ต้องการค้นหา" title="หมายเลขบัตรประชาชน, ชื่อ, HN"
+                       data-rel="tooltip" style="width: 210px;">
+
+                <button type="button" class="btn btn-primary" id="btn_search">
+                    <i class="glyphicon glyphicon-search"></i>
+                </button>
+
+                <button type="button" class="btn btn-success pull-right" id="btn_refresh">
+                    <i class="glyphicon glyphicon-refresh"></i> รีเฟรช
+                </button>
             </form>
         </div>
 
@@ -57,19 +75,47 @@
     </div>
 
     <div class="tab-pane" id="tab_wait">
-        <blockquote>
-            <p>แสดงรายชื่อทั้งหมดที่ยังไม่ได้รับการยืนยันจากทางอำเภอ ซึ่งทั้งหมดได้รับการยืนยันจากทางหน่วยบริการแล้ว</p>
-            <small>admin</small>
-        </blockquote>
+        <br>
+
+        <div class="navbar navbar-default">
+            <form action="#" class="navbar-form">
+                <label for="">สถานะ</label>
+                <select id="sl_wait_ptstatus" class="form-control" style="width: 180px;">
+                    <option value="">ทั้งหมด</option>
+                    <option value="1">หาย</option>
+                    <option value="2">เสียชีวิต</option>
+                    <option value="3">ยังรักษาอยู่</option>
+                </select>
+                <button type="button" class="btn btn-primary" id="btn_get_wait_filter">
+                    <i class="glyphicon glyphicon-search"></i> แสดง
+                </button>
+
+                <div class="btn-group pull-right">
+                    <button type="button" class="btn btn-success" id="btn_check_all" title="เลือกทั้งหมด" data-rel="tooltip">
+                        <i class="glyphicon glyphicon-check"></i> เลือก
+                    </button>
+                    <button type="button" class="btn btn-default" id="btn_clear_all" title="ยกเลิกทั้งหมด" data-rel="tooltip">
+                        <i class="glyphicon glyphicon-refresh"></i> ยกเลิก
+                    </button>
+                    <button type="button" class="btn btn-danger" id="btn_do_import" title="นำเข้ารายการ" data-rel="tooltip">
+                        <i class="glyphicon glyphicon-share"></i> นำเข้า
+                    </button>
+                </div>
+
+
+            </form>
+        </div>
 
         <table class="table table-striped" id="tbl_waiting_list">
             <thead>
             <tr>
+                <th>#</th>
                 <th>วันที่ป่วย</th>
                 <th>เลขบัตรประชาชน</th>
                 <th>ชื่อ - สกุล</th>
                 <th>วันเกิด</th>
                 <th>อายุ (ปี)</th>
+                <th>สถานะ</th>
                 <th>กลุ่มโรค 506</th>
                 <th>สถานบริการ</th>
                 <th></th>
@@ -77,7 +123,7 @@
             </thead>
             <tbody>
             <tr>
-                <td colspan="8">...</td>
+                <td colspan="10">...</td>
             </tr>
             </tbody>
         </table>

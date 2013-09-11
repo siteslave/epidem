@@ -22,11 +22,12 @@ $(function () {
     };
 
     ampur.ajax = {
-        get_list: function (start, stop, cb) {
+        get_list: function (p, start, stop, cb) {
             var url = '/ampur/get_list',
                 params = {
                     start: start,
-                    stop: stop
+                    stop: stop,
+                    p: p
                 }
 
             app.ajax(url, params, function (err, data) {
@@ -34,29 +35,62 @@ $(function () {
             });
         },
 
-        get_list_total: function (cb) {
-            var url = '/ampur/get_list_total',
-                params = {}
+        get_list_filter: function (start_date, end_date, p, start, stop, cb) {
+            var url = '/ampur/get_list_filter',
+                params = {
+                    start: start,
+                    stop: stop,
+                    p: p,
+                    s: start_date,
+                    e: end_date
+                }
 
             app.ajax(url, params, function (err, data) {
                 err ? cb(err) : cb(null, data);
             });
         },
 
-        get_waiting_list: function (start, stop, cb) {
+        get_list_total: function (p, cb) {
+            var url = '/ampur/get_list_total',
+                params = {
+                    p: p
+                }
+
+            app.ajax(url, params, function (err, data) {
+                err ? cb(err) : cb(null, data);
+            });
+        },
+
+        get_list_total_filter: function (start_date, end_date, p, cb) {
+            var url = '/ampur/get_list_total_filter',
+                params = {
+                    p: p,
+                    s: start_date,
+                    e: end_date
+                }
+
+            app.ajax(url, params, function (err, data) {
+                err ? cb(err) : cb(null, data);
+            });
+        },
+
+        get_waiting_list: function (p, start, stop, cb) {
             var url = '/ampur/get_waiting_list',
                 params = {
                     start: start,
-                    stop: stop
+                    stop: stop,
+                    p: p
                 }
 
             app.ajax(url, params, function (err, data) {
                 err ? cb(err) : cb(null, data);
             });
         },
-        get_waiting_list_total: function (cb) {
+        get_waiting_list_total: function (p, cb) {
             var url = '/ampur/get_waiting_list_total',
-                params = {}
+                params = {
+                    p: p
+                }
 
             app.ajax(url, params, function (err, data) {
                 err ? cb(err) : cb(null, data);
@@ -115,6 +149,27 @@ $(function () {
             app.ajax(url, params, function (err, data) {
                 err ? cb(err) : cb(null, data);
             });
+        },
+
+        search: function (q, cb) {
+            var url = '/ampur/search',
+                params = {
+                    q: q
+                }
+
+            app.ajax(url, params, function (err, data) {
+                err ? cb(err) : cb(null, data);
+            });
+        },
+        do_import: function (items, cb) {
+            var url = '/ampur/do_import',
+                params = {
+                    items: items
+                }
+
+            app.ajax(url, params, function (err, data) {
+                err ? cb(err) : cb(null, data);
+            });
         }
     }
 
@@ -123,10 +178,11 @@ $(function () {
         if (_.size(data.rows) > 0) {
             _.each(data.rows, function (v) {
 
-                var ptstatus = v.ptstatus == '1' ? 'หาย' : v.ptstatus == '2' ? 'ตาย' : v.ptstatus == '3' ? 'ยังรักษาอยู่' : v.ptstatus== '9' ? 'ไม่ทราบ' : '-';
+                var ptstatus = v.ptstatus == '1' ? 'หาย' : v.ptstatus == '2' ? 'เสียชีวิต' : v.ptstatus == '3' ? 'ยังรักษาอยู่' : v.ptstatus== '9' ? 'ไม่ทราบ' : '-';
                 var tr_death = v.ptstatus == '2' ? 'class="danger"' : '';
+
                 $('#tbl_list > tbody').append(
-                    '<tr class="'+tr_death+'">' +
+                    '<tr '+tr_death+'">' +
                         '<td>' + v.e0 + '</td>' +
                         '<td>' + v.e1 + '</td>' +
                         '<td>' + v.datesick + '</td>' +
@@ -137,7 +193,7 @@ $(function () {
                         '<td>' + ptstatus + '</td>' +
                         '<td>' + app.strip(v.code506, 45) + '</td>' +
                         '<td>' + v.hospcode + ' ' + app.strip(v.hospname, 20) + '</td>' +
-                        '<td><a href="javascript:void(0);" class="btn btn-small btn-success" data-id="' + v.id + '" ' +
+                        '<td><a href="javascript:void(0);" class="btn btn-small btn-default" data-id="' + v.id + '" ' +
                         'data-name="btn_get_detail" title="ดูข้อมูล" data-rel="tooltip"><i class="glyphicon glyphicon-edit"></i></a></td>' +
                         '</tr>'
                 );
@@ -150,14 +206,16 @@ $(function () {
         }
     };
 
-    ampur.get_list = function () {
+    ampur.get_list = function (p) {
+
+        $('#main_paging').fadeIn('slow');
 
         $('#tbl_patient_list > tbody').empty();
 
-        ampur.ajax.get_list_total(function (err, data) {
+        ampur.ajax.get_list_total(p, function (err, data) {
             if (err) {
                 app.alert(err);
-                $('#tbl_patient_list > tbody').append('<tr><td colspan="8">ไม่พบรายการ</td></tr>');
+                $('#tbl_patient_list > tbody').append('<tr><td colspan="11">ไม่พบรายการ</td></tr>');
             } else {
                 $('#spn_total').html(app.add_commars_with_out_decimal(data.total));
                 $('#main_paging').paging(data.total, {
@@ -167,10 +225,98 @@ $(function () {
                     page: app.get_cookie('ampur_index_paging'),
                     onSelect: function (page) {
                         app.set_cookie('ampur_index_paging', page);
-                        ampur.ajax.get_list(this.slice[0], this.slice[1], function (err, data) {
+                        ampur.ajax.get_list(p, this.slice[0], this.slice[1], function (err, data) {
                             if (err) {
                                 app.alert(err);
-                                $('#tbl_patient_list > tbody').append('<tr><td colspan="8">ไม่พบรายการ</td></tr>');
+                                $('#tbl_patient_list > tbody').append('<tr><td colspan="11">ไม่พบรายการ</td></tr>');
+                            } else {
+                                ampur.set_list(data);
+                            }
+                        });
+
+                    },
+                    onFormat: function (type) {
+                        switch (type) {
+
+                            case 'block':
+
+                                if (!this.active)
+                                    return '<li class="disabled"><a href="">' + this.value + '</a></li>';
+                                else if (this.value != this.page)
+                                    return '<li><a href="#' + this.value + '">' + this.value + '</a></li>';
+                                return '<li class="active"><a href="#">' + this.value + '</a></li>';
+
+                            case 'right':
+                            case 'left':
+
+                                if (!this.active) {
+                                    return "";
+                                }
+                                return '<li><a href="#' + this.value + '">' + this.value + '</a></li>';
+
+                            case 'next':
+
+                                if (this.active) {
+                                    return '<li><a href="#' + this.value + '">&raquo;</a></li>';
+                                }
+                                return '<li class="disabled"><a href="">&raquo;</a></li>';
+
+                            case 'prev':
+
+                                if (this.active) {
+                                    return '<li><a href="#' + this.value + '">&laquo;</a></li>';
+                                }
+                                return '<li class="disabled"><a href="">&laquo;</a></li>';
+
+                            case 'first':
+
+                                if (this.active) {
+                                    return '<li><a href="#' + this.value + '">&lt;</a></li>';
+                                }
+                                return '<li class="disabled"><a href="">&lt;</a></li>';
+
+                            case 'last':
+
+                                if (this.active) {
+                                    return '<li><a href="#' + this.value + '">&gt;</a></li>';
+                                }
+                                return '<li class="disabled"><a href="">&gt;</a></li>';
+
+                            case 'fill':
+                                if (this.active) {
+                                    return '<li class="disabled"><a href="#">...</a></li>';
+                                }
+                        }
+                        return ""; // return nothing for missing branches
+                    }
+                });
+            }
+        });
+    };
+
+    ampur.get_list_filter = function (start_date, end_date, ptstatus) {
+
+        $('#main_paging').fadeIn('slow');
+
+        $('#tbl_patient_list > tbody').empty();
+
+        ampur.ajax.get_list_total_filter(start_date, end_date, ptstatus, function(err, data) {
+            if (err) {
+                app.alert(err);
+                $('#tbl_patient_list > tbody').append('<tr><td colspan="11">ไม่พบรายการ</td></tr>');
+            } else {
+                $('#spn_total').html(app.add_commars_with_out_decimal(data.total));
+                $('#main_paging').paging(data.total, {
+                    format: " < . (qq -) nnncnnn (- pp) . >",
+                    perpage: app.record_per_page,
+                    lapping: 0,
+                    page: app.get_cookie('ampur_index_paging'),
+                    onSelect: function (page) {
+                        app.set_cookie('ampur_index_paging', page);
+                        ampur.ajax.get_list_filter(start_date, end_date, ptstatus, this.slice[0], this.slice[1], function (err, data) {
+                            if (err) {
+                                app.alert(err);
+                                $('#tbl_patient_list > tbody').append('<tr><td colspan="11">ไม่พบรายการ</td></tr>');
                             } else {
                                 ampur.set_list(data);
                             }
@@ -248,12 +394,12 @@ $(function () {
         ampur.get_list();
     });
 
-    ampur.get_waiting_list = function () {
-        ampur.ajax.get_waiting_list_total(function (err, data) {
+    ampur.get_waiting_list = function (p) {
+        ampur.ajax.get_waiting_list_total(p, function (err, data) {
             if (err) {
                 app.alert(err);
                 $('#tbl_waiting_list > tbody').empty();
-                $('#tbl_waiting_list > tbody').append('<tr><td colspan="7">ไม่พบรายการ</td></tr>');
+                $('#tbl_waiting_list > tbody').append('<tr><td colspan="10">ไม่พบรายการ</td></tr>');
             } else {
                 $('#spn_wait').html(app.add_commars_with_out_decimal(data.total));
 
@@ -264,11 +410,11 @@ $(function () {
                     page: app.get_cookie('ampur_index_wait_paging'),
                     onSelect: function (page) {
                         app.set_cookie('ampur_index_wait_paging', page);
-                        ampur.ajax.get_waiting_list(this.slice[0], this.slice[1], function (err, data) {
+                        ampur.ajax.get_waiting_list(p, this.slice[0], this.slice[1], function (err, data) {
                             if (err) {
                                 app.alert(err);
                                 $('#tbl_waiting_list > tbody').empty();
-                                $('#tbl_waiting_list > tbody').append('<tr><td colspan="7">ไม่พบรายการ</td></tr>');
+                                $('#tbl_waiting_list > tbody').append('<tr><td colspan="10">ไม่พบรายการ</td></tr>');
                             } else {
                                 ampur.set_waiting_list(data);
                             }
@@ -343,23 +489,23 @@ $(function () {
 
             _.each(data.rows, function (v) {
                 var tr_death = v.ptstatus == '2' ? 'class="danger"' : '';
-                //var chk_import = v.RECORD_STATUS == '1' || v.RECORD_STATUS == '2' ? '<input type="checkbox" disabled>' : '<input type="checkbox" data-name="chk_import" data-id="' + v.ID + '">';
                 var ptstatus = v.ptstatus == '1' ? 'หาย' : v.ptstatus == '2' ? 'ตาย' : v.ptstatus == '3' ? 'ยังรักษาอยู่' : v.ptstatus== '9' ? 'ไม่ทราบ' : '-';
 
                 $('#tbl_waiting_list > tbody').append(
                     '<tr ' + tr_death + '>' +
-                        '<td>' + v.datesick+'</td>' +
+                        '<td><input type="checkbox" data-name="chk_import" data-id="' + v.id + '" data-code506="'+ v.code506 +'"></td>' +
+                        '<td>' + v.datesick +'</td>' +
                         '<td>' + app.clear_null(v.cid) + '</td>' +
                         '<td>' + app.clear_null(v.name) + '</td>' +
                         '<td>' + app.clear_null(v.birth) + '</td>' +
                         '<td>' + v.age + '</td>' +
-                        //'<td>' + ptstatus + '</td>' +
+                        '<td>' + ptstatus + '</td>' +
                         '<td>' + v.code506 + ' ' + app.strip(v.code506_name, 40) + '</td>' +
                         '<td>' + v.hospcode + ' ' + app.strip(v.hospname, 20) + '</td>' +
                         '<td><div class="btn-group">' +
-                        '<a href="javascript:void(0);" class="btn btn-success" data-id="' + v.id + '" data-code506="' + v.code506 + '" ' +
+                        '<a href="javascript:void(0);" class="btn btn-default" data-id="' + v.id + '" data-code506="' + v.code506 + '" ' +
                         'data-name="btn_approve" data-ptname="' + v.name + '" title="ยืนยันข้อมูล" data-rel="tooltip"><i class="glyphicon glyphicon-check"></i></a>' +
-                        '<a href="javascript:void(0);" class="btn btn-success" data-id="' + v.id + '" title="ดูข้อมูล"' +
+                        '<a href="javascript:void(0);" class="btn btn-default" data-id="' + v.id + '" title="ดูข้อมูล"' +
                         'data-name="btn_detail" data-rel="tooltip"><i class="glyphicon glyphicon-info-sign"></i></a>' +
                         '</div></td>' +
                         '</tr>'
@@ -370,7 +516,7 @@ $(function () {
             app.set_runtime();
         }
         else {
-            $('#tbl_waiting_list > tbody').append('<tr><td colspan="8">ไม่พบรายการ</td></tr>');
+            $('#tbl_waiting_list > tbody').append('<tr><td colspan="10">ไม่พบรายการ</td></tr>');
         }
 
     };
@@ -698,10 +844,106 @@ $(function () {
 
     });
 
-    ampur.ajax.get_waiting_list_total(function (err, v) {
+    ampur.ajax.get_waiting_list_total(null, function (err, v) {
 
         $('#spn_wait').html(app.add_commars_with_out_decimal(v.total));
 
+    });
+
+
+    // search
+    $('#btn_search').on('click', function(e) {
+        e.preventDefault();
+
+        var query = $('#txt_query').val();
+
+        if(query)
+        {
+            ampur.ajax.search(query, function(err, data) {
+                if(err)
+                {
+                    app.alert(err);
+                }
+                else
+                {
+                    $('#main_paging').fadeOut('slow');
+                    ampur.set_list(data);
+                }
+            });
+        }
+        else
+        {
+            app.alert('กรุณาระบุคำค้นหา');
+        }
+    });
+
+    $('#btn_get_list').on('click', function(e) {
+
+        e.preventDefault();
+
+        var start_date = $('#txt_query_start_date').val(),
+            end_date = $('#txt_query_end_date').val(),
+            ptstatus = $('#sl_query_ptstatus').val();
+
+        if(start_date && end_date) {
+            ampur.get_list_filter(start_date, end_date, ptstatus);
+        }
+        else
+        {
+            ampur.get_list(ptstatus);
+        }
+    });
+
+
+    $('#btn_check_all').on('click', function () {
+        $('input[data-name="chk_import"]').each(function () {
+            $(this).prop('checked', true);
+        });
+    });
+    $('#btn_clear_all').on('click', function () {
+        $('input[data-name="chk_import"]').each(function () {
+            $(this).prop('checked', false);
+        });
+    });
+
+    $('#btn_do_import').on('click', function () {
+        var data = [];
+        var id = [];
+
+        $('input[data-name="chk_import"]').each(function () {
+            if ($(this).prop('checked')) {
+                var obj = {};
+                obj.id = $(this).data('id');
+                obj.code506 = $(this).data('code506');
+                data.push(obj);
+                //id.push($(this).data('id'));
+            }
+        });
+
+        if (data.length == 0) {
+            app.alert('กรุณาเลือกรายการที่ต้องการนำเข้า');
+        }
+        else {
+            if (confirm('คุณต้องการนำเข้ารายการทั้งหมด ' + data.length + ' รายการ ใช่หรือไม่?')) {
+                ampur.ajax.do_import(data, function (err) {
+                    if (err) {
+                        app.alert(err);
+                    }
+                    else {
+                        app.alert('นำเข้าข้อมูลเสร็จเรียบร้อยแล้ว');
+                        ampur.get_waiting_list();
+                    }
+                });
+            }
+        }
+    });
+
+    $('#btn_get_wait_filter').on('click', function(e) {
+        e.preventDefault();
+
+        var ptstatus = $('#sl_wait_ptstatus').val();
+
+        ampur.get_waiting_list(ptstatus);
     });
 
     ampur.get_list();

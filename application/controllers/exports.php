@@ -13,8 +13,11 @@ class Exports extends CI_Controller {
         $this->amp_code = $this->session->userdata('amp_code');
         $this->user_level = $this->session->userdata('user_level');
 
+        if($this->user_level == '3')
+            $this->layout->setLayout('default_layout');
+
         if($this->user_level == '2')
-            redirect(site_url('ampur'));
+            $this->layout->setLayout('ampur_layout');
 
         if($this->user_level == '1')
             redirect(site_url('admin'));
@@ -118,7 +121,7 @@ class Exports extends CI_Controller {
                 e.school as SCHOOL, date_format(e.datesick, "%d/%m/%Y %H:%i:%s") as DATESICK, date_format(e.datedefine, "%d/%m/%Y %H:%i:%s") as DATEDEFINE,
                 date_format(e.datedeath, "%d/%m/%Y %H:%i:%s") as DATEDEATH, date_format(e.daterecord, "%d/%m/%Y %H:%i:%s") as DATERECORD,
                 date_format(e.datereach, "%d/%m/%Y %H:%i:%s") as DATEREACH, e.intime as INTIME, e.organism as ORGANISM, e.complica as COMPLICA,
-                e.cid as IDCARD, e.icd10 as ICD10, e.officeid as OFFICEID
+                e.cid as IDCARD, e.icd10 as ICD10, e.office_id as OFFICEID
 
                 from epe0 e
 
@@ -137,7 +140,7 @@ class Exports extends CI_Controller {
                 e.school as SCHOOL, date_format(e.datesick, "%d/%m/%Y %H:%i:%s") as DATESICK, date_format(e.datedefine, "%d/%m/%Y %H:%i:%s") as DATEDEFINE,
                 date_format(e.datedeath, "%d/%m/%Y %H:%i:%s") as DATEDEATH, date_format(e.daterecord, "%d/%m/%Y %H:%i:%s") as DATERECORD,
                 date_format(e.datereach, "%d/%m/%Y %H:%i:%s") as DATEREACH, e.intime as INTIME, e.organism as ORGANISM, e.complica as COMPLICA,
-                e.cid as IDCARD, e.icd10 as ICD10, e.officeid as OFFICEID
+                e.cid as IDCARD, e.icd10 as ICD10, e.office_id as OFFICEID
 
                 from epe0 e
 
