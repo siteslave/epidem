@@ -194,7 +194,7 @@ $(function () {
                         '<td>' + app.strip(v.code506, 45) + '</td>' +
                         '<td>' + v.hospcode + ' ' + app.strip(v.hospname, 20) + '</td>' +
                         '<td><a href="javascript:void(0);" class="btn btn-small btn-default" data-id="' + v.id + '" ' +
-                        'data-name="btn_get_detail" title="ดูข้อมูล" data-rel="tooltip"><i class="glyphicon glyphicon-edit"></i></a></td>' +
+                        'data-name="btn_detail" title="ดูข้อมูล" data-rel="tooltip"><i class="glyphicon glyphicon-edit"></i></a></td>' +
                         '</tr>'
                 );
             });
