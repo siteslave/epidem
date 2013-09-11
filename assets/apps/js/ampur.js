@@ -937,12 +937,20 @@ $(function () {
             }
         }
     });
-
+/*
     $('#btn_get_wait_filter').on('click', function(e) {
         e.preventDefault();
 
         var ptstatus = $('#sl_wait_ptstatus').val();
 
+        ampur.get_waiting_list(ptstatus);
+    });*/
+
+    $('label[data-name="opt_ptstatus"]').on('click', function(e) {
+
+        e.preventDefault();
+
+        var ptstatus = $(this).data('value');
         ampur.get_waiting_list(ptstatus);
     });
 

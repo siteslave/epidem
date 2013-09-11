@@ -20,7 +20,7 @@
                 <input type="text" id="txt_query_end_date" data-type="date" class="form-control"
                        placeholder="วว/ดด/ปปปป" style="width: 110px;" title="เช่น 31/01/2556" data-rel="tooltip">
 
-                <select class="form-control" style="width: 130px;" id="sl_query_ptstatus">
+                <select class="form-control" style="width: 130px;" id="sl_query_ptstatus" autocomplete="off">
                     <option value="">ทั้งหมด</option>
                     <option value="1">หาย</option>
                     <option value="2">เสียชีวิต</option>
@@ -79,16 +79,34 @@
 
         <div class="navbar navbar-default">
             <form action="#" class="navbar-form">
-                <label for="">สถานะ</label>
+                <div class="btn-group" data-toggle="buttons">
+                    <label class="btn btn-default" data-name="opt_ptstatus">
+                        <input type="radio" name="options">
+                        <i class="glyphicon glyphicon-th-list"></i> ทั้งหมด
+                    </label>
+                    <label class="btn btn-success" data-name="opt_ptstatus" data-value="1">
+                        <input type="radio" name="options">
+                        <i class="glyphicon glyphicon-check"></i> หาย
+                    </label>
+                    <label class="btn btn-default" data-name="opt_ptstatus" data-value="2">
+                        <input type="radio" name="options">
+                        <i class="glyphicon glyphicon-fire"></i> เสียชีวิต
+                    </label>
+                    <label class="btn btn-primary" data-name="opt_ptstatus" data-value="3">
+                        <input type="radio" name="options">
+                        <i class="glyphicon glyphicon-eye-close"></i> ยังรักษาอยู่
+                    </label>
+                </div>
+                <!--<label for="">สถานะ</label>
                 <select id="sl_wait_ptstatus" class="form-control" style="width: 180px;">
                     <option value="">ทั้งหมด</option>
                     <option value="1">หาย</option>
                     <option value="2">เสียชีวิต</option>
                     <option value="3">ยังรักษาอยู่</option>
-                </select>
+                </select>--><!--
                 <button type="button" class="btn btn-primary" id="btn_get_wait_filter">
                     <i class="glyphicon glyphicon-search"></i> แสดง
-                </button>
+                </button>-->
 
                 <div class="btn-group pull-right">
                     <button type="button" class="btn btn-success" id="btn_check_all" title="เลือกทั้งหมด" data-rel="tooltip">
