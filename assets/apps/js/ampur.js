@@ -16,18 +16,33 @@ $(function () {
                 backdrop: 'static'
             })
         },
+
+        show_search: function() {
+            $('#mdl_search').modal({
+                keyboard: false,
+                backdrop: 'static'
+            });
+        },
+
         hide_approve: function() {
             $('#mdl_approve').modal('hide');
+        },
+
+        hide_search: function() {
+            $('#mdl_search').modal('hide');
         }
     };
 
     ampur.ajax = {
-        get_list: function (p, start, stop, cb) {
+        get_list: function (start_date, end_date, ptstatus, nation, start, stop, cb) {
             var url = '/ampur/get_list',
                 params = {
+                    s: start_date,
+                    e: end_date,
                     start: start,
                     stop: stop,
-                    p: p
+                    p: ptstatus,
+                    n: nation
                 }
 
             app.ajax(url, params, function (err, data) {
@@ -35,12 +50,37 @@ $(function () {
             });
         },
 
-        get_list_filter: function (start_date, end_date, p, start, stop, cb) {
-            var url = '/ampur/get_list_filter',
+        get_other_list: function (start_date, end_date,  start, stop, cb) {
+            var url = '/ampur/get_other_list',
                 params = {
+                    s: start_date,
+                    e: end_date,
                     start: start,
-                    stop: stop,
-                    p: p,
+                    stop: stop
+                }
+
+            app.ajax(url, params, function (err, data) {
+                err ? cb(err) : cb(null, data);
+            });
+        },
+
+        get_list_total: function (start_date, end_date, ptstatus, nation, cb) {
+            var url = '/ampur/get_list_total',
+                params = {
+                    p: ptstatus,
+                    s: start_date,
+                    e: end_date,
+                    n: nation
+                }
+
+            app.ajax(url, params, function (err, data) {
+                err ? cb(err) : cb(null, data);
+            });
+        },
+
+        get_other_total: function (start_date, end_date, cb) {
+            var url = '/ampur/get_other_total',
+                params = {
                     s: start_date,
                     e: end_date
                 }
@@ -49,30 +89,22 @@ $(function () {
                 err ? cb(err) : cb(null, data);
             });
         },
+/*
 
-        get_list_total: function (p, cb) {
-            var url = '/ampur/get_list_total',
-                params = {
-                    p: p
-                }
-
-            app.ajax(url, params, function (err, data) {
-                err ? cb(err) : cb(null, data);
-            });
-        },
-
-        get_list_total_filter: function (start_date, end_date, p, cb) {
+        get_list_total_filter: function (start_date, end_date, p, n, cb) {
             var url = '/ampur/get_list_total_filter',
                 params = {
                     p: p,
                     s: start_date,
-                    e: end_date
+                    e: end_date,
+                    n: n
                 }
 
             app.ajax(url, params, function (err, data) {
                 err ? cb(err) : cb(null, data);
             });
         },
+*/
 
         get_waiting_list: function (p, start, stop, cb) {
             var url = '/ampur/get_waiting_list',
@@ -193,8 +225,28 @@ $(function () {
                         '<td>' + ptstatus + '</td>' +
                         '<td>' + app.strip(v.code506, 45) + '</td>' +
                         '<td>' + v.hospcode + ' ' + app.strip(v.hospname, 20) + '</td>' +
-                        '<td><a href="javascript:void(0);" class="btn btn-small btn-default" data-id="' + v.id + '" ' +
-                        'data-name="btn_detail" title="ดูข้อมูล" data-rel="tooltip"><i class="glyphicon glyphicon-edit"></i></a></td>' +
+                        '<td><div class="btn-group">' +
+                        '<button type="button" class="btn btn-default btn-small dropdown-toggle" data-toggle="dropdown">' +
+                        '<i class="glyphicon glyphicon-cog"></i> <span class="caret"></span>' +
+                        '</button>' +
+                        '<ul class="dropdown-menu pull-right" role="menu">' +
+                        '<li>' +
+                        '<a href="javascript:void(0);" data-id="' + v.id + '" data-name="btn_detail">' +
+                        '<i class="glyphicon glyphicon-edit"></i> ดูข้อมูล' +
+                        '</a>' +
+                        '</li>' +
+                        '<li>' +
+                        '<a href="javascript:void(0);" data-id="'+ v.id +'" data-name="btn_get_map"> ' +
+                        '<i class="glyphicon glyphicon-log-out"></i> ดูแผนที่' +
+                        '</a>' +
+                        '</li>' +
+                        '<li>' +
+                        '<a href="javascript:void(0);" data-id="'+ v.id +'" data-name="btn_set_map"> ' +
+                        '<i class="glyphicon glyphicon-map-marker"></i> แก้ไขพิกัด' +
+                        '</a>' +
+                        '</li>' +
+                        '</ul>' +
+                        '</div></td>' +
                         '</tr>'
                 );
             });
@@ -206,13 +258,241 @@ $(function () {
         }
     };
 
-    ampur.get_list = function (p) {
+    ampur.set_other_list = function (data) {
+        $('#tbl_other_list > tbody').empty();
+        if (_.size(data.rows) > 0) {
+            _.each(data.rows, function (v) {
+
+                var ptstatus = v.ptstatus == '1' ? 'หาย' : v.ptstatus == '2' ? 'เสียชีวิต' : v.ptstatus == '3' ? 'ยังรักษาอยู่' : v.ptstatus== '9' ? 'ไม่ทราบ' : '-';
+                var tr_death = v.ptstatus == '2' ? 'class="danger"' : '';
+
+                $('#tbl_other_list > tbody').append(
+                    '<tr '+tr_death+'">' +
+                        '<td>' + v.e0 + '</td>' +
+                        '<td>' + v.e1 + '</td>' +
+                        '<td>' + v.datesick + '</td>' +
+                        '<td>' + v.cid + '</td>' +
+                        '<td>' + v.name + '</td>' +
+                        '<td>' + v.birth + '</td>' +
+                        '<td>' + v.age + '</td>' +
+                        '<td>' + ptstatus + '</td>' +
+                        '<td>' + app.strip(v.code506, 45) + '</td>' +
+                        '<td>' + v.hospcode + ' ' + app.strip(v.hospname, 20) + '</td>' +
+                        '<td><div class="btn-group">' +
+                        '<button type="button" class="btn btn-default btn-small dropdown-toggle" data-toggle="dropdown">' +
+                        '<i class="glyphicon glyphicon-cog"></i> <span class="caret"></span>' +
+                        '</button>' +
+                        '<ul class="dropdown-menu pull-right" role="menu">' +
+                        '<li>' +
+                        '<a href="javascript:void(0);" data-id="' + v.id + '" data-name="btn_detail">' +
+                        '<i class="glyphicon glyphicon-edit"></i> ดูข้อมูล' +
+                        '</a>' +
+                        '</li>' +
+                        '<li>' +
+                        '<a href="javascript:void(0);" data-id="'+ v.id +'" data-name="btn_get_map"> ' +
+                        '<i class="glyphicon glyphicon-log-out"></i> ดูแผนที่' +
+                        '</a>' +
+                        '<li>' +
+                        '<a href="javascript:void(0);" data-id="'+ v.id +'" data-name="btn_set_map"> ' +
+                        '<i class="glyphicon glyphicon-map-marker"></i> แก้ไขพิกัด' +
+                        '</a>' +
+                        '</li>' +
+                        '</ul>' +
+                        '</div></td>' +
+                        '</tr>'
+                );
+            });
+
+            app.set_runtime();
+        }
+        else {
+            $('#tbl_other_list > tbody').append('<tr><td colspan="11">ไม่พบรายการ</td></tr>');
+        }
+    };
+
+    ampur.get_other_list = function (start_date, end_date) {
+
+        $('#main_paging').fadeIn('slow');
+
+        $('#tbl_other_list > tbody').empty();
+
+        ampur.ajax.get_other_total(start_date, end_date, function (err, data) {
+            if (err) {
+                app.alert(err);
+                $('#tbl_other_list > tbody').append('<tr><td colspan="11">ไม่พบรายการ</td></tr>');
+            } else {
+                $('#spn_other').html(app.add_commars_with_out_decimal(data.total));
+                $('#other_paging').paging(data.total, {
+                    format: " < . (qq -) nnncnnn (- pp) . >",
+                    perpage: app.record_per_page,
+                    lapping: 0,
+                    page: app.get_cookie('ampur_other_paging'),
+                    onSelect: function (page) {
+                        app.set_cookie('ampur_other_paging', page);
+                        ampur.ajax.get_other_list(start_date, end_date, this.slice[0], this.slice[1], function (err, data) {
+                            if (err) {
+                                app.alert(err);
+                                $('#tbl_other_list > tbody').append('<tr><td colspan="11">ไม่พบรายการ</td></tr>');
+                            } else {
+                                ampur.set_other_list(data);
+                            }
+                        });
+
+                    },
+                    onFormat: function (type) {
+                        switch (type) {
+
+                            case 'block':
+
+                                if (!this.active)
+                                    return '<li class="disabled"><a href="">' + this.value + '</a></li>';
+                                else if (this.value != this.page)
+                                    return '<li><a href="#' + this.value + '">' + this.value + '</a></li>';
+                                return '<li class="active"><a href="#">' + this.value + '</a></li>';
+
+                            case 'right':
+                            case 'left':
+
+                                if (!this.active) {
+                                    return "";
+                                }
+                                return '<li><a href="#' + this.value + '">' + this.value + '</a></li>';
+
+                            case 'next':
+
+                                if (this.active) {
+                                    return '<li><a href="#' + this.value + '">&raquo;</a></li>';
+                                }
+                                return '<li class="disabled"><a href="">&raquo;</a></li>';
+
+                            case 'prev':
+
+                                if (this.active) {
+                                    return '<li><a href="#' + this.value + '">&laquo;</a></li>';
+                                }
+                                return '<li class="disabled"><a href="">&laquo;</a></li>';
+
+                            case 'first':
+
+                                if (this.active) {
+                                    return '<li><a href="#' + this.value + '">&lt;</a></li>';
+                                }
+                                return '<li class="disabled"><a href="">&lt;</a></li>';
+
+                            case 'last':
+
+                                if (this.active) {
+                                    return '<li><a href="#' + this.value + '">&gt;</a></li>';
+                                }
+                                return '<li class="disabled"><a href="">&gt;</a></li>';
+
+                            case 'fill':
+                                if (this.active) {
+                                    return '<li class="disabled"><a href="#">...</a></li>';
+                                }
+                        }
+                        return ""; // return nothing for missing branches
+                    }
+                });
+            }
+        });
+    };
+
+    ampur.get_list = function (start_date, end_date, ptstatus, nation) {
+
+        $('#main_paging').fadeIn('slow');
+
+        $('#tbl_list > tbody').empty();
+
+        ampur.ajax.get_list_total(start_date, end_date, ptstatus, nation , function (err, data) {
+            if (err) {
+                app.alert(err);
+                $('#tbl_list > tbody').append('<tr><td colspan="11">ไม่พบรายการ</td></tr>');
+            } else {
+                $('#spn_total').html(app.add_commars_with_out_decimal(data.total));
+                $('#main_paging').paging(data.total, {
+                    format: " < . (qq -) nnncnnn (- pp) . >",
+                    perpage: app.record_per_page,
+                    lapping: 0,
+                    page: app.get_cookie('ampur_index_paging'),
+                    onSelect: function (page) {
+                        app.set_cookie('ampur_index_paging', page);
+                        ampur.ajax.get_list(start_date, end_date, ptstatus, nation, this.slice[0], this.slice[1], function (err, data) {
+                            if (err) {
+                                app.alert(err);
+                                $('#tbl_list > tbody').append('<tr><td colspan="11">ไม่พบรายการ</td></tr>');
+                            } else {
+                                ampur.set_list(data);
+                            }
+                        });
+
+                    },
+                    onFormat: function (type) {
+                        switch (type) {
+
+                            case 'block':
+
+                                if (!this.active)
+                                    return '<li class="disabled"><a href="">' + this.value + '</a></li>';
+                                else if (this.value != this.page)
+                                    return '<li><a href="#' + this.value + '">' + this.value + '</a></li>';
+                                return '<li class="active"><a href="#">' + this.value + '</a></li>';
+
+                            case 'right':
+                            case 'left':
+
+                                if (!this.active) {
+                                    return "";
+                                }
+                                return '<li><a href="#' + this.value + '">' + this.value + '</a></li>';
+
+                            case 'next':
+
+                                if (this.active) {
+                                    return '<li><a href="#' + this.value + '">&raquo;</a></li>';
+                                }
+                                return '<li class="disabled"><a href="">&raquo;</a></li>';
+
+                            case 'prev':
+
+                                if (this.active) {
+                                    return '<li><a href="#' + this.value + '">&laquo;</a></li>';
+                                }
+                                return '<li class="disabled"><a href="">&laquo;</a></li>';
+
+                            case 'first':
+
+                                if (this.active) {
+                                    return '<li><a href="#' + this.value + '">&lt;</a></li>';
+                                }
+                                return '<li class="disabled"><a href="">&lt;</a></li>';
+
+                            case 'last':
+
+                                if (this.active) {
+                                    return '<li><a href="#' + this.value + '">&gt;</a></li>';
+                                }
+                                return '<li class="disabled"><a href="">&gt;</a></li>';
+
+                            case 'fill':
+                                if (this.active) {
+                                    return '<li class="disabled"><a href="#">...</a></li>';
+                                }
+                        }
+                        return ""; // return nothing for missing branches
+                    }
+                });
+            }
+        });
+    };
+
+    ampur.get_list_filter = function (start_date, end_date, ptstatus, nation) {
 
         $('#main_paging').fadeIn('slow');
 
         $('#tbl_patient_list > tbody').empty();
 
-        ampur.ajax.get_list_total(p, function (err, data) {
+        ampur.ajax.get_list_total_filter(start_date, end_date, ptstatus, nation, function(err, data) {
             if (err) {
                 app.alert(err);
                 $('#tbl_patient_list > tbody').append('<tr><td colspan="11">ไม่พบรายการ</td></tr>');
@@ -225,7 +505,7 @@ $(function () {
                     page: app.get_cookie('ampur_index_paging'),
                     onSelect: function (page) {
                         app.set_cookie('ampur_index_paging', page);
-                        ampur.ajax.get_list(p, this.slice[0], this.slice[1], function (err, data) {
+                        ampur.ajax.get_list_filter(start_date, end_date, ptstatus, nation, this.slice[0], this.slice[1], function (err, data) {
                             if (err) {
                                 app.alert(err);
                                 $('#tbl_patient_list > tbody').append('<tr><td colspan="11">ไม่พบรายการ</td></tr>');
@@ -294,93 +574,13 @@ $(function () {
         });
     };
 
-    ampur.get_list_filter = function (start_date, end_date, ptstatus) {
+    $(document).on('click', 'a[data-name="btn_set_map"]', function(e) {
+        e.preventDefault();
 
-        $('#main_paging').fadeIn('slow');
+        var id = $(this).data('id');
 
-        $('#tbl_patient_list > tbody').empty();
-
-        ampur.ajax.get_list_total_filter(start_date, end_date, ptstatus, function(err, data) {
-            if (err) {
-                app.alert(err);
-                $('#tbl_patient_list > tbody').append('<tr><td colspan="11">ไม่พบรายการ</td></tr>');
-            } else {
-                $('#spn_total').html(app.add_commars_with_out_decimal(data.total));
-                $('#main_paging').paging(data.total, {
-                    format: " < . (qq -) nnncnnn (- pp) . >",
-                    perpage: app.record_per_page,
-                    lapping: 0,
-                    page: app.get_cookie('ampur_index_paging'),
-                    onSelect: function (page) {
-                        app.set_cookie('ampur_index_paging', page);
-                        ampur.ajax.get_list_filter(start_date, end_date, ptstatus, this.slice[0], this.slice[1], function (err, data) {
-                            if (err) {
-                                app.alert(err);
-                                $('#tbl_patient_list > tbody').append('<tr><td colspan="11">ไม่พบรายการ</td></tr>');
-                            } else {
-                                ampur.set_list(data);
-                            }
-                        });
-
-                    },
-                    onFormat: function (type) {
-                        switch (type) {
-
-                            case 'block':
-
-                                if (!this.active)
-                                    return '<li class="disabled"><a href="">' + this.value + '</a></li>';
-                                else if (this.value != this.page)
-                                    return '<li><a href="#' + this.value + '">' + this.value + '</a></li>';
-                                return '<li class="active"><a href="#">' + this.value + '</a></li>';
-
-                            case 'right':
-                            case 'left':
-
-                                if (!this.active) {
-                                    return "";
-                                }
-                                return '<li><a href="#' + this.value + '">' + this.value + '</a></li>';
-
-                            case 'next':
-
-                                if (this.active) {
-                                    return '<li><a href="#' + this.value + '">&raquo;</a></li>';
-                                }
-                                return '<li class="disabled"><a href="">&raquo;</a></li>';
-
-                            case 'prev':
-
-                                if (this.active) {
-                                    return '<li><a href="#' + this.value + '">&laquo;</a></li>';
-                                }
-                                return '<li class="disabled"><a href="">&laquo;</a></li>';
-
-                            case 'first':
-
-                                if (this.active) {
-                                    return '<li><a href="#' + this.value + '">&lt;</a></li>';
-                                }
-                                return '<li class="disabled"><a href="">&lt;</a></li>';
-
-                            case 'last':
-
-                                if (this.active) {
-                                    return '<li><a href="#' + this.value + '">&gt;</a></li>';
-                                }
-                                return '<li class="disabled"><a href="">&gt;</a></li>';
-
-                            case 'fill':
-                                if (this.active) {
-                                    return '<li class="disabled"><a href="#">...</a></li>';
-                                }
-                        }
-                        return ""; // return nothing for missing branches
-                    }
-                });
-            }
-        });
-    };
+        app.go_to_url('/maps/set_map/' + id);
+    });
 
     $('#btn_refresh').on('click', function () {
         ampur.get_list();
@@ -844,15 +1044,8 @@ $(function () {
 
     });
 
-    ampur.ajax.get_waiting_list_total(null, function (err, v) {
 
-        $('#spn_wait').html(app.add_commars_with_out_decimal(v.total));
-
-    });
-
-
-    // search
-    $('#btn_search').on('click', function(e) {
+    $('#btn_do_search').on('click', function(e) {
         e.preventDefault();
 
         var query = $('#txt_query').val();
@@ -866,7 +1059,9 @@ $(function () {
                 }
                 else
                 {
+                    ampur.modal.hide_search();
                     $('#main_paging').fadeOut('slow');
+
                     ampur.set_list(data);
                 }
             });
@@ -877,25 +1072,36 @@ $(function () {
         }
     });
 
+    // search
+    $('#btn_search').on('click', function(e) {
+        e.preventDefault();
+
+        ampur.modal.show_search();
+
+    });
+
     $('#btn_get_list').on('click', function(e) {
 
         e.preventDefault();
 
         var start_date = $('#txt_query_start_date').val(),
             end_date = $('#txt_query_end_date').val(),
-            ptstatus = $('#sl_query_ptstatus').val();
+            ptstatus = $('#sl_query_ptstatus').val(),
+            nation = $('#sl_query_nation').val();
 
-        if(start_date && end_date) {
-            ampur.get_list_filter(start_date, end_date, ptstatus);
+        /*if(start_date && end_date) {
+            ampur.get_list_filter(start_date, end_date, ptstatus, nation);
         }
         else
         {
             ampur.get_list(ptstatus);
-        }
+        }*/
+
+        ampur.get_list(start_date, end_date, ptstatus, nation);
     });
 
 
-    $('#btn_check_all').on('click', function () {
+    $('#btn_do_import').on('click', function () {
         $('input[data-name="chk_import"]').each(function () {
             $(this).prop('checked', true);
         });
@@ -937,14 +1143,6 @@ $(function () {
             }
         }
     });
-/*
-    $('#btn_get_wait_filter').on('click', function(e) {
-        e.preventDefault();
-
-        var ptstatus = $('#sl_wait_ptstatus').val();
-
-        ampur.get_waiting_list(ptstatus);
-    });*/
 
     $('label[data-name="opt_ptstatus"]').on('click', function(e) {
 
@@ -952,6 +1150,47 @@ $(function () {
 
         var ptstatus = $(this).data('value');
         ampur.get_waiting_list(ptstatus);
+    });
+
+
+    ampur.ajax.get_waiting_list_total(null, function (err, v) {
+
+        $('#spn_wait').html(app.add_commars_with_out_decimal(v.total));
+
+    });
+
+    ampur.ajax.get_other_total(null, null, function (err, v) {
+
+        $('#spn_other').html(app.add_commars_with_out_decimal(v.total));
+
+    });
+
+
+    $('a[href="#tab_other"]').on('click', function () {
+        ampur.get_other_list();
+    });
+
+    $('#btn_get_other_list').on('click', function(e) {
+
+        e.preventDefault();
+
+        var start_date = $('#txt_other_start_date').val();
+        var end_date = $('#txt_other_end_date').val();
+
+        ampur.get_other_list(start_date, end_date);
+    });
+
+    $('#btn_get_other_refresh').on('click', function(e) {
+
+        e.preventDefault();
+
+        ampur.get_other_list();
+    });
+
+    $(document).on('click', 'a[data-name="btn_get_map"]', function(e) {
+        e.preventDefault();
+        var id = $(this).data('id');
+        app.go_to_url('/maps/show_map/' + id);
     });
 
     ampur.get_list();

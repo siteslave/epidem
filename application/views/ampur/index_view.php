@@ -4,8 +4,9 @@
 </ul>
 
 <ul class="nav nav-tabs">
-    <li class="active"><a href="#tab_patient" data-toggle="tab">ทะเบียนทั้งหมด <span class="badge" id="spn_total">0</span></a></li>
-    <li><a href="#tab_wait" data-toggle="tab">รอตรวจสอบ <span class="badge" id="spn_wait">0</span></a></li>
+    <li class="active"><a href="#tab_patient" data-toggle="tab"><i class="glyphicon glyphicon-th"></i> ทะเบียนทั้งหมด <span class="badge" id="spn_total">0</span></a></li>
+    <li><a href="#tab_wait" data-toggle="tab"><i class="glyphicon glyphicon-time"></i> รอตรวจสอบ <span class="badge" id="spn_wait">0</span></a></li>
+    <li><a href="#tab_other" data-toggle="tab"><i class="glyphicon glyphicon-eye-close"></i> จากสถานบริการอื่น <span class="badge" id="spn_other">0</span></a></li>
 </ul>
 <div class="tab-content">
     <div class="tab-pane active" id="tab_patient">
@@ -27,24 +28,35 @@
                     <option value="3">ยังรักษาอยู่</option>
                 </select>
 
+                <select id="sl_query_nation" style="width: 180px;" class="form-control">
+                    <option value="">ทั้งหมด</option>
+                    <?php
+                    foreach($nation as $r) {
+                        echo '<option value="' . $r->code . '">' . $r->name . '</option>';
+                    } ?>
+                </select>
+
                 <div class="btn-group">
                     <button type="button" class="btn btn-primary" id="btn_get_list">
                         <i class="glyphicon glyphicon-search"></i> แสดง
                     </button>
                 </div>
-                |
+                <!--
                 <label>ค้นหา</label>
                 <input type="text" id="txt_query" class="form-control"
                        placeholder="ระบุสิ่งที่ต้องการค้นหา" title="หมายเลขบัตรประชาชน, ชื่อ, HN"
                        data-rel="tooltip" style="width: 210px;">
 
-                <button type="button" class="btn btn-primary" id="btn_search">
-                    <i class="glyphicon glyphicon-search"></i>
-                </button>
+                -->
+                <div class="btn-group pull-right">
+                    <button type="button" class="btn btn-default" id="btn_search">
+                        <i class="glyphicon glyphicon-search"></i> ค้นหา
+                    </button>
 
-                <button type="button" class="btn btn-success pull-right" id="btn_refresh">
-                    <i class="glyphicon glyphicon-refresh"></i> รีเฟรช
-                </button>
+                    <button type="button" class="btn btn-success" id="btn_refresh">
+                        <i class="glyphicon glyphicon-refresh"></i> รีเฟรช
+                    </button>
+                </div>
             </form>
         </div>
 
@@ -146,6 +158,81 @@
             </tbody>
         </table>
         <ul class="pagination" id="waiting_paging"></ul>
+    </div>
+
+    <div class="tab-pane" id="tab_other">
+        <br>
+        <div class="navbar navbar-default">
+            <form action="#" class="navbar-form">
+                <label>ตั้งแต่วันที่</label>
+                <input type="text" id="txt_other_start_date" data-type="date" class="form-control"
+                       placeholder="วว/ดด/ปปปป" title="เช่น 01/01/2556" data-rel="tooltip" style="width: 110px;">
+
+                <label>ถึงวันที่</label>
+                <input type="text" id="txt_other_end_date" data-type="date" class="form-control"
+                       placeholder="วว/ดด/ปปปป" style="width: 110px;" title="เช่น 31/01/2556" data-rel="tooltip">
+
+                <button type="button" class="btn btn-primary" id="btn_get_other_list">
+                    <i class="glyphicon glyphicon-search"></i> แสดง
+                </button>
+                <button type="button" class="btn btn-success pull-right" id="btn_get_other_refresh">
+                    <i class="glyphicon glyphicon-refresh"></i> ทั้งหมด
+                </button>
+
+            </form>
+        </div>
+
+        <table class="table table-striped" id="tbl_other_list">
+            <thead>
+            <tr>
+                <th>E0</th>
+                <th>E1</th>
+                <th>วันที่ป่วย</th>
+                <th>เลขบัตรประชาชน</th>
+                <th>ชื่อ - สกุล</th>
+                <th>วันเกิด</th>
+                <th>อายุ (ปี)</th>
+                <th>สถานะ</th>
+                <th>CODE506</th>
+                <th>หน่วยบริการ</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td colspan="11">...</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <ul class="pagination" id="other_paging"></ul>
+    </div>
+
+    <div class="modal fade" id="mdl_search">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title"><i class="glyphicon glyphicon-search"></i> ค้นหาข้อมูล</h4>
+                </div>
+                <div class="modal-body">
+                    <form action="#" class="form-inline">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="txt_query"
+                                placeholder="เลขบัตรประชาชน, ชื่อ, HN">
+                            <span class="input-group-btn">
+                                <button class="btn btn-primary" id="btn_do_search" type="button">
+                                    <i class="glyphicon glyphicon-search"></i> ค้นหา!</button>
+                            </span>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <!--<a href="javascript:void(0);" class="btn btn-success" id="btn_do_approve"><i class="glyphicon glyphicon-floppy-save"></i> ใช่ ยืนยัน</a>
+                    <a href="javascript:void(0);" class="btn btn-danger" data-dismiss="modal"><i class="glyphicon glyphicon-remove"></i> ปิดหน้าต่าง</a>-->
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="modal fade" id="mdl_approve">

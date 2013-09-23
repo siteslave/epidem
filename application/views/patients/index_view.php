@@ -3,9 +3,10 @@
     <li class="active">ทะเบียนผู้ป่วย</li>
 </ul>
 
-<ul class="nav nav-pills">
-    <li class="active"><a href="#tab_patient" data-toggle="tab">ทะเบียนทั้งหมด <span class="badge" id="spn_total">0</span></a></li>
-    <li><a href="#tab_wait" data-toggle="tab">รอตรวจสอบ <span class="badge" id="spn_wait">0</span></a></li>
+<ul class="nav nav-tabs">
+    <li class="active"><a href="#tab_patient" data-toggle="tab"><i class="glyphicon glyphicon-th"></i> ทะเบียนทั้งหมด <span class="badge" id="spn_total">0</span></a></li>
+    <li><a href="#tab_wait" data-toggle="tab"><i class="glyphicon glyphicon-time"></i> รอตรวจสอบ <span class="badge" id="spn_wait">0</span></a></li>
+
 </ul>
 <div class="tab-content">
     <div class="tab-pane active" id="tab_patient">
@@ -20,11 +21,19 @@
                 <input type="text" id="txt_query_end_date" data-type="date" class="form-control"
                        placeholder="วว/ดด/ปปปป" style="width: 110px;" title="เช่น 31/01/2556" data-rel="tooltip">
 
-                <select class="form-control" style="width: 130px;" id="sl_query_ptstatus">
+                <select class="form-control" style="width: 130px;" id="sl_query_ptstatus" autocomplete="off">
                     <option value="">ทั้งหมด</option>
                     <option value="1">หาย</option>
                     <option value="2">เสียชีวิต</option>
                     <option value="3">ยังรักษาอยู่</option>
+                </select>
+
+                <select id="sl_query_nation" style="width: 180px;" class="form-control">
+                    <option value="">ทั้งหมด</option>
+                    <?php
+                    foreach($nation as $r) {
+                        echo '<option value="' . $r->code . '">' . $r->name . '</option>';
+                    } ?>
                 </select>
 
                 <div class="btn-group">
@@ -32,23 +41,26 @@
                         <i class="glyphicon glyphicon-search"></i> แสดง
                     </button>
                 </div>
-                |
+                <!--
                 <label>ค้นหา</label>
                 <input type="text" id="txt_query" class="form-control"
                        placeholder="ระบุสิ่งที่ต้องการค้นหา" title="หมายเลขบัตรประชาชน, ชื่อ, HN"
                        data-rel="tooltip" style="width: 210px;">
 
-                <button type="button" class="btn btn-primary" id="btn_search">
-                    <i class="glyphicon glyphicon-search"></i>
-                </button>
+                -->
+                <div class="btn-group pull-right">
+                    <button type="button" class="btn btn-default" id="btn_search">
+                        <i class="glyphicon glyphicon-search"></i> ค้นหา
+                    </button>
 
-                <button type="button" class="btn btn-success pull-right" id="btn_refresh">
-                    <i class="glyphicon glyphicon-refresh"></i> รีเฟรช
-                </button>
+                    <button type="button" class="btn btn-success" id="btn_refresh">
+                        <i class="glyphicon glyphicon-refresh"></i> รีเฟรช
+                    </button>
+                </div>
             </form>
         </div>
 
-        <table class="table table-striped" id="tbl_patient_list">
+        <table class="table table-striped" id="tbl_list">
             <thead>
             <tr>
                 <th>E0</th>
@@ -72,9 +84,56 @@
 
     <div class="tab-pane" id="tab_wait">
         <br>
+        <div class="navbar navbar-default">
+            <form action="#" class="navbar-form">
+                <div class="btn-group" data-toggle="buttons">
+                    <label class="btn btn-default" data-name="opt_ptstatus">
+                        <input type="radio" name="options">
+                        <i class="glyphicon glyphicon-th-list"></i> ทั้งหมด
+                    </label>
+                    <label class="btn btn-success" data-name="opt_ptstatus" data-value="1">
+                        <input type="radio" name="options">
+                        <i class="glyphicon glyphicon-check"></i> หาย
+                    </label>
+                    <label class="btn btn-default" data-name="opt_ptstatus" data-value="2">
+                        <input type="radio" name="options">
+                        <i class="glyphicon glyphicon-fire"></i> เสียชีวิต
+                    </label>
+                    <label class="btn btn-primary" data-name="opt_ptstatus" data-value="3">
+                        <input type="radio" name="options">
+                        <i class="glyphicon glyphicon-eye-close"></i> ยังรักษาอยู่
+                    </label>
+                </div>
+                <!--<label for="">สถานะ</label>
+                <select id="sl_wait_ptstatus" class="form-control" style="width: 180px;">
+                    <option value="">ทั้งหมด</option>
+                    <option value="1">หาย</option>
+                    <option value="2">เสียชีวิต</option>
+                    <option value="3">ยังรักษาอยู่</option>
+                </select>--><!--
+                <button type="button" class="btn btn-primary" id="btn_get_wait_filter">
+                    <i class="glyphicon glyphicon-search"></i> แสดง
+                </button>-->
+
+        <!--        <div class="btn-group pull-right">
+                    <button type="button" class="btn btn-success" id="btn_check_all" title="เลือกทั้งหมด" data-rel="tooltip">
+                        <i class="glyphicon glyphicon-check"></i> เลือก
+                    </button>
+                    <button type="button" class="btn btn-default" id="btn_clear_all" title="ยกเลิกทั้งหมด" data-rel="tooltip">
+                        <i class="glyphicon glyphicon-refresh"></i> ยกเลิก
+                    </button>
+                    <button type="button" class="btn btn-danger" id="btn_do_import" title="นำเข้ารายการ" data-rel="tooltip">
+                        <i class="glyphicon glyphicon-share"></i> นำเข้า
+                    </button>
+                </div>-->
+
+
+            </form>
+        </div>
         <table class="table table-striped" id="tbl_waiting_list">
             <thead>
             <tr>
+                <!--<th>#</th>-->
                 <th>วันที่</th>
                 <th>เลขบัตรประชาชน</th>
                 <th>ชื่อ - สกุล</th>
@@ -87,13 +146,41 @@
             </thead>
             <tbody>
             <tr>
-                <td colspan="7">...</td>
+                <td colspan="8">...</td>
             </tr>
             </tbody>
         </table>
         <ul class="pagination" id="waiting_paging"></ul>
     </div>
 </div>
+
+<div class="modal fade" id="mdl_search">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title"><i class="glyphicon glyphicon-search"></i> ค้นหาข้อมูล</h4>
+            </div>
+            <div class="modal-body">
+                <form action="#" class="form-inline">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="txt_query"
+                               placeholder="เลขบัตรประชาชน, ชื่อ, HN">
+                            <span class="input-group-btn">
+                                <button class="btn btn-primary" id="btn_do_search" type="button">
+                                    <i class="glyphicon glyphicon-search"></i> ค้นหา!</button>
+                            </span>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <!--<a href="javascript:void(0);" class="btn btn-success" id="btn_do_approve"><i class="glyphicon glyphicon-floppy-save"></i> ใช่ ยืนยัน</a>
+                <a href="javascript:void(0);" class="btn btn-danger" data-dismiss="modal"><i class="glyphicon glyphicon-remove"></i> ปิดหน้าต่าง</a>-->
+            </div>
+        </div>
+    </div>
+</div>
+
 <!--##### Survilance Modal View -->
 <div class="modal fade" id="mdl_edit_for_approve">
     <div class="modal-dialog" style="width: 960px;">

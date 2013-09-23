@@ -11,31 +11,96 @@ class Patient_model extends CI_Model {
     public $hospcode;
     public $hserv;
 
-    public function get_list_ssj($start, $limit)
+    public function get_list($hospcode, $start, $limit)
     {
         $result = $this->db
-            ->where('e0 IS NOT NULL')
-            ->order_by('e0')
+            ->where('hospcode', $hospcode)
             ->limit($limit, $start)
             ->get('epe0')
             ->result();
         return $result;
     }
 
-    public function get_list($hospcode,$start, $limit)
+    public function get_list_by_ptstatus($hospcode, $p, $start, $limit)
     {
         $result = $this->db
-            ->where('hospcode',$hospcode)
+            ->where('hospcode', $hospcode)
+            ->where('result', $p)
             ->limit($limit, $start)
             ->get('epe0')
             ->result();
         return $result;
     }
-    public function get_list_by_ptstatus($hospcode,$start, $limit, $p)
+
+    public function get_list_by_nation($hospcode, $n, $start, $limit)
     {
         $result = $this->db
-            ->where('hospcode',$hospcode)
+            ->where('hospcode', $hospcode)
+            ->where('nation', $n)
+            ->limit($limit, $start)
+            ->get('epe0')
+            ->result();
+        return $result;
+    }
+
+    public function get_list_by_ptstatus_nation($hospcode, $p, $n, $start, $limit)
+    {
+        $result = $this->db
+            ->where('hospcode', $hospcode)
+            ->where('nation', $n)
             ->where('result', $p)
+            ->limit($limit, $start)
+            ->get('epe0')
+            ->result();
+        return $result;
+    }
+
+    public function get_list_by_date($hospcode, $s, $e, $start, $limit)
+    {
+        $result = $this->db
+            ->where('hospcode', $hospcode)
+            ->where('datesick >=', $s)
+            ->where('datesick <=', $e)
+            ->limit($limit, $start)
+            ->get('epe0')
+            ->result();
+        return $result;
+    }
+
+    public function get_list_by_date_ptstatus($hospcode, $s, $e, $p, $start, $limit)
+    {
+        $result = $this->db
+            ->where('hospcode', $hospcode)
+            ->where('result', $p)
+            ->where('datesick >=', $s)
+            ->where('datesick <=', $e)
+            ->limit($limit, $start)
+            ->get('epe0')
+            ->result();
+        return $result;
+    }
+
+    public function get_list_by_date_nation($hospcode, $s, $e, $n, $start, $limit)
+    {
+        $result = $this->db
+            ->where('hospcode', $hospcode)
+            ->where('nation', $n)
+            ->where('datesick >=', $s)
+            ->where('datesick <=', $e)
+            ->limit($limit, $start)
+            ->get('epe0')
+            ->result();
+        return $result;
+    }
+
+    public function get_list_by_date_ptstatus_nation($hospcode, $s, $e, $p, $n, $start, $limit)
+    {
+        $result = $this->db
+            ->where('hospcode', $hospcode)
+            ->where('result', $p)
+            ->where('nation', $n)
+            ->where('datesick >=', $s)
+            ->where('datesick <=', $e)
             ->limit($limit, $start)
             ->get('epe0')
             ->result();
@@ -51,12 +116,72 @@ class Patient_model extends CI_Model {
 
     public function get_list_total_by_ptstatus($hospcode, $p){
         $rs = $this->db
-            ->where('hospcode',$hospcode)
+            ->where('hospcode', $hospcode)
             ->where('result', $p)
             ->count_all_results('epe0');
         return $rs;
     }
 
+    public function get_list_total_by_nation($hospcode, $n){
+        $rs = $this->db
+            ->where('hospcode', $hospcode)
+            ->where('nation', $n)
+            ->count_all_results('epe0');
+        return $rs;
+    }
+
+    public function get_list_total_by_ptstatus_nation($hospcode, $p, $n){
+        $rs = $this->db
+            ->where('hospcode', $hospcode)
+            ->where('result', $p)
+            ->where('nation', $n)
+            ->count_all_results('epe0');
+        return $rs;
+    }
+
+    public function get_list_total_by_date($hospcode, $s, $e){
+        $rs = $this->db
+            ->where('hospcode', $hospcode)
+            ->where('datesick >=', $s)
+            ->where('datesick <=', $e)
+            ->count_all_results('epe0');
+        return $rs;
+    }
+
+    public function get_list_total_by_date_ptstatus($hospcode, $s, $e, $p)
+    {
+        $rs = $this->db
+            ->where('hospcode', $hospcode)
+            ->where('result', $p)
+            ->where('datesick >=', $s)
+            ->where('datesick <=', $e)
+            ->count_all_results('epe0');
+        return $rs;
+    }
+
+    public function get_list_total_by_date_nation($hospcode, $s, $e, $n)
+    {
+        $rs = $this->db
+            ->where('hospcode', $hospcode)
+            ->where('nation', $n)
+            ->where('datesick >=', $s)
+            ->where('datesick <=', $e)
+            ->count_all_results('epe0');
+        return $rs;
+    }
+
+    public function get_list_total_by_date_ptstatus_nation($hospcode, $s, $e, $p, $n)
+    {
+        $rs = $this->db
+            ->where('hospcode', $hospcode)
+            ->where('result', $p)
+            ->where('nation', $n)
+            ->where('datesick >=', $s)
+            ->where('datesick <=', $e)
+            ->count_all_results('epe0');
+        return $rs;
+    }
+/*
     public function get_list_filter($hospcode, $s, $e, $start, $limit)
     {
         $result = $this->db
@@ -92,6 +217,7 @@ class Patient_model extends CI_Model {
             ->count_all_results('epe0');
         return $rs;
     }
+
     public function get_list_total_filter_by_ptstatus($hospcode, $s, $e, $p){
         $rs = $this->db
             ->where('hospcode',$hospcode)
@@ -107,7 +233,7 @@ class Patient_model extends CI_Model {
             ->where('e0 IS NOT NULL')
             ->count_all_results('epe0');
         return $rs;
-    }
+    }*/
 
     public function check_duplicate_tmp($diagcode, $cid, $date_serv)
     {
@@ -313,7 +439,7 @@ class Patient_model extends CI_Model {
 
         return $rs;
     }
-
+/*
     public function get_waiting_list_ssj($start, $limit)
     {
         $rs = $this->db
@@ -329,15 +455,16 @@ class Patient_model extends CI_Model {
             ->result();
 
         return $rs;
-    }
+    }*/
 
-    public function get_waiting_list($hospcode,$start, $limit)
+    public function get_waiting_list($hospcode, $start, $limit)
     {
         $rs = $this->db
             ->select(array('s.*', 'i.desc_r as diagname','d506.name as dname506'))
             ->where(array(
                 's.record_status' => '1',
-                's.hospcode' => $hospcode))
+                's.hospcode' => $hospcode
+            ))
             ->join('ref_icd10 i', 'i.code=s.diagcode', 'left')
             ->join('ref_code506 d506', 'd506.code=s.code506', 'left')
             ->limit($limit, $start)
@@ -347,6 +474,26 @@ class Patient_model extends CI_Model {
 
         return $rs;
     }
+
+    public function get_waiting_list_by_ptstatus($hospcode, $p, $start, $limit)
+    {
+        $rs = $this->db
+            ->select(array('s.*', 'i.desc_r as diagname','d506.name as dname506'))
+            ->where(array(
+                's.record_status' => '1',
+                's.hospcode' => $hospcode,
+                's.ptstatus' => $p
+            ))
+            ->join('ref_icd10 i', 'i.code=s.diagcode', 'left')
+            ->join('ref_code506 d506', 'd506.code=s.code506', 'left')
+            ->limit($limit, $start)
+            ->order_by('date_serv')
+            ->get('surveillance s')
+            ->result();
+
+        return $rs;
+    }
+
     public function get_waiting_list_total($hospcode)
     {
         $rs = $this->db
@@ -359,6 +506,19 @@ class Patient_model extends CI_Model {
         return $rs ? $rs : 0;
     }
 
+    public function get_waiting_list_total_by_ptstatus($hospcode, $p)
+    {
+        $rs = $this->db
+            ->where(array(
+                'record_status' => '1',
+                'hospcode' => $hospcode,
+                'ptstatus' => $p
+            ))
+            ->count_all_results('surveillance');
+
+        return $rs ? $rs : 0;
+    }
+/*
  public function get_waiting_list_total_ssj()
     {
         $rs = $this->db
@@ -369,7 +529,7 @@ class Patient_model extends CI_Model {
         return $rs ? $rs : 0;
 
         return $rs ? $rs : 0;
-    }
+    }*/
 
     public function get_waiting_detail($id)
     {

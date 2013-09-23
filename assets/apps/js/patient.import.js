@@ -62,10 +62,10 @@ $(function () {
             });
         },
 
-        do_import: function (id, cb) {
+        do_import: function (items, cb) {
             var url = '/patients/do_import',
                 params = {
-                    id: id
+                    items: items
                 }
 
             app.ajax(url, params, function (err, data) {

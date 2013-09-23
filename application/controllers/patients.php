@@ -1,4 +1,4 @@
-﻿<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * Patients Controller
  *
@@ -9,7 +9,6 @@
 
 class Patients extends CI_Controller
 {
-
     public $hospcode;
     public $hserv;
     public $amp_code;
@@ -56,24 +55,63 @@ class Patients extends CI_Controller
         $this->layout->view('patients/index_view', $data);
     }
 
+    public function imports()
+    {
+        $this->layout->view('patients/import_view');
+    }
+
     public function get_list()
     {
         $start = $this->input->post('start');
         $stop = $this->input->post('stop');
+
+        $s = $this->input->post('s');
+        $e = $this->input->post('e');
+
+        $s = to_mysql_date($s);
+        $e = to_mysql_date($e);
+
         $p = $this->input->post('p');
+        $n = $this->input->post('n');
 
         $start = empty($start) ? 0 : $start;
         $stop = empty($stop) ? 25 : $stop;
 
         $limit = (int) $stop - (int) $start;
 
-        if(empty($p))
+        $by_date = $s && $e;
+
+        if(!$by_date && !empty($p) && empty($n))
         {
-            $rs = $this->patient->get_list($this->hospcode,$start, $limit);
+            $rs = $this->patient->get_list_by_ptstatus($this->hospcode, $p, $start, $limit);
+        }
+        else if(!$by_date && empty($p) && !empty($n))
+        {
+            $rs = $this->patient->get_list_by_nation($this->hospcode, $n, $start, $limit);
+        }
+        else if(!$by_date && !empty($p) && !empty($n))
+        {
+            $rs = $this->patient->get_list_by_ptstatus_nation($this->hospcode, $p, $n, $start, $limit);
+        }
+        else if($by_date && empty($p) && empty($n))
+        {
+            $rs = $this->patient->get_list_by_date($this->hospcode, $s, $e, $start, $limit);
+        }
+        else if($by_date && !empty($p) && empty($n))
+        {
+            $rs = $this->patient->get_list_by_date_ptstatus($this->hospcode, $s, $e, $p, $start, $limit);
+        }
+        else if($by_date && empty($p) && !empty($n))
+        {
+            $rs = $this->patient->get_list_by_date_nation($this->hospcode, $s, $e, $n, $start, $limit);
+        }
+        else if($by_date && !empty($p) && !empty($n))
+        {
+            $rs = $this->patient->get_list_by_date_ptstatus_nation($this->hospcode, $s, $e, $p, $n, $start, $limit);
         }
         else
         {
-            $rs = $this->patient->get_list_by_ptstatus($this->hospcode,$start, $limit, $p);
+            $rs = $this->patient->get_list($this->hospcode, $start, $limit);
         }
 
         if($rs)
@@ -115,14 +153,47 @@ class Patients extends CI_Controller
     public function get_list_total()
     {
         $p = $this->input->post('p');
+        $n = $this->input->post('n');
 
-        if(empty($p))
+        $s = $this->input->post('s');
+        $e = $this->input->post('e');
+
+        $s = to_mysql_date($s);
+        $e = to_mysql_date($e);
+
+        $by_date = $s && $e;
+
+        if(!$by_date && !empty($p) && empty($n))
         {
-            $total = $this->patient->get_list_total($this->hospcode);
+            $total = $this->patient->get_list_total_by_ptstatus($this->hospcode, $p);
+        }
+        else if(!$by_date && empty($p) && !empty($n))
+        {
+            $total = $this->patient->get_list_total_by_nation($this->hospcode, $n);
+        }
+        else if(!$by_date && !empty($p) && !empty($n))
+        {
+            $total = $this->patient->get_list_total_by_ptstatus_nation($this->hospcode, $p, $n);
+        }
+        else if($by_date && empty($p) && empty($n))
+        {
+            $total = $this->patient->get_list_total_by_date($this->hospcode, $s, $e);
+        }
+        else if($by_date && !empty($p) && empty($n))
+        {
+            $total = $this->patient->get_list_total_by_date_ptstatus($this->hospcode, $s, $e, $p);
+        }
+        else if($by_date && empty($p) && !empty($n))
+        {
+            $total = $this->patient->get_list_total_by_date_nation($this->hospcode, $s, $e, $n);
+        }
+        else if($by_date && !empty($p) && !empty($n))
+        {
+            $total = $this->patient->get_list_total_by_date_ptstatus_nation($this->hospcode, $s, $e, $p, $n);
         }
         else
         {
-            $total = $this->patient->get_list_total_by_ptstatus($this->hospcode, $p);
+            $total = $this->patient->get_list_total($this->hospcode);
         }
 
 
@@ -478,7 +549,30 @@ class Patients extends CI_Controller
             show_error('Not ajax.', 404);
         }
     }
+    public function do_import()
+    {
+        $items = $this->input->post('items');
 
+        if(!empty($items))
+        {
+            foreach($items as $i)
+            {
+                $e0 = ($this->pa->get_e0_sso($this->amp_code)) + 1;
+                $e1 = ($this->ampur->get_e1_sso($this->amp_code, $i['code506'])) + 1;
+
+                $this->ampur->do_approve($i['id'], $e0, $e1);
+            }
+
+            $json = '{"success": true}';
+        }
+        else
+        {
+            $json = '{"success": false, "msg": "ไม่พบรหัสที่ต้องการลบ"}';
+        }
+
+        render_json($json);
+    }
+/*
     public function do_import()
     {
         if($this->input->is_ajax_request())
@@ -504,11 +598,20 @@ class Patients extends CI_Controller
         {
             show_error('Not ajax.', 404);
         }
-    }
+    }*/
 
     public function get_waiting_list_total()
     {
-        $rs = $this->patient->get_waiting_list_total($this->hospcode);
+        $p = $this->input->post('p');
+
+        if(empty($p))
+        {
+            $rs = $this->patient->get_waiting_list_total($this->hospcode);
+        }
+        else
+        {
+            $rs = $this->patient->get_waiting_list_total_by_ptstatus($this->hospcode, $p);
+        }
 
         $json = '{"success": true, "total": ' . $rs . '}';
         render_json($json);
@@ -524,7 +627,16 @@ class Patients extends CI_Controller
 
         $limit = (int) $stop - (int) $start;
 
-        $rs = $this->patient->get_waiting_list($this->hospcode,$start, $limit);
+        $p = $this->input->post('p');
+
+        if(empty($p))
+        {
+            $rs = $this->patient->get_waiting_list($this->hospcode, $start, $limit);
+        }
+        else
+        {
+            $rs = $this->patient->get_waiting_list_by_ptstatus($this->hospcode, $p, $start, $limit);
+        }
 
         $json = $rs ? '{"success": true, "rows": ' . json_encode($rs) . '}' : '{"success": false, "msg": "ไม่พบรายการ"}';
         render_json($json);
@@ -558,6 +670,7 @@ class Patients extends CI_Controller
                     $data['hserv'] = $this->hserv;
 
                     $rs = $this->patient->save( $data );
+
                     if($rs)
                     {
                         //update status

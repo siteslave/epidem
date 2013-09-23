@@ -74,7 +74,14 @@
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-list"></i> บริการหลัก <b class="caret"></b></a>
                 <ul class="dropdown-menu">
                     <li role="presentation" class="dropdown-header">MAIN SERVICES</li>
-                    <li><a href="<?=site_url('patients')?>"><i class="glyphicon glyphicon-th-list"></i> ทะเบียนผู้ป่วย</a></li>
+					<?php if($this->session->userdata('user_level') == '1'){ ?>
+					<li><a href="<?=site_url('admin')?>"><i class="glyphicon glyphicon-th-list"></i> ทะเบียนผู้ป่วย</a></li>
+					<?php } else if($this->session->userdata('user_level') == '2') {?>
+					<li><a href="<?=site_url('ampur')?>"><i class="glyphicon glyphicon-th-list"></i> ทะเบียนผู้ป่วย</a></li>
+					<?php } else { ?>
+						<li><a href="<?=site_url('patients')?>"><i class="glyphicon glyphicon-th-list"></i> ทะเบียนผู้ป่วย</a></li>
+					<?php } ?>
+                    
                 </ul>
             </li>
             <li class="dropdown">

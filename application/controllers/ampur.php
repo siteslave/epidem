@@ -40,7 +40,7 @@ class Ampur extends CI_Controller
 
         $this->layout->view('ampur/index_view', $data);
     }
-
+/*
     public function get_list()
     {
         $start = $this->input->post('start');
@@ -97,9 +97,9 @@ class Ampur extends CI_Controller
         }
 
         render_json($json);
-    }
+    }*/
 
-    public function get_list_filter()
+    public function get_list()
     {
         $start = $this->input->post('start');
         $stop = $this->input->post('stop');
@@ -111,19 +111,46 @@ class Ampur extends CI_Controller
         $e = to_mysql_date($e);
 
         $p = $this->input->post('p');
+        $n = $this->input->post('n');
 
         $start = empty($start) ? 0 : $start;
         $stop = empty($stop) ? 25 : $stop;
 
         $limit = (int) $stop - (int) $start;
 
-        if(empty($p))
+        $by_date = $s && $e;
+
+        if(!$by_date && !empty($p) && empty($n))
         {
-            $rs = $this->ampur->get_list_filter($this->amp_code, $s, $e, $start, $limit);
+            $rs = $this->ampur->get_list_by_ptstatus($this->amp_code, $p, $start, $limit);
+        }
+        else if(!$by_date && empty($p) && !empty($n))
+        {
+            $rs = $this->ampur->get_list_by_nation($this->amp_code, $n, $start, $limit);
+        }
+        else if(!$by_date && !empty($p) && !empty($n))
+        {
+            $rs = $this->ampur->get_list_by_ptstatus_nation($this->amp_code, $p, $n, $start, $limit);
+        }
+        else if($by_date && empty($p) && empty($n))
+        {
+            $rs = $this->ampur->get_list_by_date($this->amp_code, $s, $e, $start, $limit);
+        }
+        else if($by_date && !empty($p) && empty($n))
+        {
+            $rs = $this->ampur->get_list_by_date_ptstatus($this->amp_code, $s, $e, $p, $start, $limit);
+        }
+        else if($by_date && empty($p) && !empty($n))
+        {
+            $rs = $this->ampur->get_list_by_date_nation($this->amp_code, $s, $e, $n, $start, $limit);
+        }
+        else if($by_date && !empty($p) && !empty($n))
+        {
+            $rs = $this->ampur->get_list_by_date_ptstatus_nation($this->amp_code, $s, $e, $p, $n, $start, $limit);
         }
         else
         {
-            $rs = $this->ampur->get_list_filter_by_ptstatus($this->amp_code, $s, $e, $start, $limit, $p);
+            $rs = $this->ampur->get_list($this->amp_code, $start, $limit);
         }
 
 
@@ -168,22 +195,53 @@ class Ampur extends CI_Controller
     public function get_list_total()
     {
         $p = $this->input->post('p');
+        $n = $this->input->post('n');
+        $s = $this->input->post('s');
+        $e = $this->input->post('e');
 
-        if(empty($p))
-        {
-            $total = $this->ampur->get_list_total($this->amp_code);
-        }
-        else
+        $s = to_mysql_date($s);
+        $e = to_mysql_date($e);
+
+        $by_date = $s && $e;
+
+        if(!$by_date && !empty($p) && empty($n))
         {
             $total = $this->ampur->get_list_total_by_ptstatus($this->amp_code, $p);
         }
-
+        else if(!$by_date && empty($p) && !empty($n))
+        {
+            $total = $this->ampur->get_list_total_by_nation($this->amp_code, $n);
+        }
+        else if(!$by_date && !empty($p) && !empty($n))
+        {
+            $total = $this->ampur->get_list_total_by_ptstatus_nation($this->amp_code, $p, $n);
+        }
+        else if($by_date && empty($p) && empty($n))
+        {
+            $total = $this->ampur->get_list_total_by_date($this->amp_code, $s, $e);
+        }
+        else if($by_date && !empty($p) && empty($n))
+        {
+            $total = $this->ampur->get_list_total_by_date_ptstatus($this->amp_code, $s, $e, $p);
+        }
+        else if($by_date && empty($p) && !empty($n))
+        {
+            $total = $this->ampur->get_list_total_by_date_nation($this->amp_code, $s, $e, $n);
+        }
+        else if($by_date && !empty($p) && !empty($n))
+        {
+            $total = $this->ampur->get_list_total_by_date_ptstatus_nation($this->amp_code, $s, $e, $p, $n);
+        }
+        else
+        {
+            $total = $this->ampur->get_list_total($this->amp_code);
+        }
 
         $json = '{"success": true, "total": '.$total.'}';
         render_json($json);
     }
 
-    public function get_list_total_filter()
+/*    public function get_list_total_filter()
     {
         $p = $this->input->post('p');
         $s = $this->input->post('s');
@@ -204,7 +262,7 @@ class Ampur extends CI_Controller
 
         $json = '{"success": true, "total": '.$total.'}';
         render_json($json);
-    }
+    }*/
 
     public function get_detail()
     {
@@ -452,6 +510,95 @@ class Ampur extends CI_Controller
             $json = '{"success": false, "msg": "ไม่พบรหัสที่ต้องการลบ"}';
         }
 
+        render_json($json);
+    }
+
+    public function get_other_list()
+    {
+        $start = $this->input->post('start');
+        $stop = $this->input->post('stop');
+
+        $s = $this->input->post('s');
+        $e = $this->input->post('e');
+
+        $s = to_mysql_date($s);
+        $e = to_mysql_date($e);
+
+
+        $start = empty($start) ? 0 : $start;
+        $stop = empty($stop) ? 25 : $stop;
+
+        $limit = (int) $stop - (int) $start;
+
+        if(empty($s) || empty($e))
+        {
+            $rs = $this->ampur->get_other_list($this->amp_code, $start, $limit);
+        }
+        else
+        {
+            $rs = $this->ampur->get_other_filter_list($this->amp_code, $s, $e, $start, $limit);
+        }
+
+
+        if($rs)
+        {
+            $arr_result = array();
+
+            foreach($rs as $r)
+            {
+                $obj = new stdClass();
+
+                $obj->e0        = $r->e0_sso;
+                $obj->e1        = $r->e1_sso;
+
+                $obj->id        = $r->id;
+                $obj->cid       = $r->cid;
+                $obj->name      = $r->name;
+                $obj->datesick  = to_thai_date($r->datesick);
+                $obj->address   = $r->address . ' ' . get_address($r->addrcode);
+                $obj->diag      = $r->icd10 . ' ' . $this->basic->get_diagname($r->icd10);
+                $obj->code506   = $r->disease . ' ' . $this->basic->get_code506name($r->disease);
+                $obj->age       = count_age($r->birth);
+                $obj->birth     = to_thai_date($r->birth);
+                $obj->ptstatus  = $r->result;
+                $obj->hospcode  = $r->hospcode;
+                $obj->hospname  = get_hospital_name($r->hospcode);
+
+                $arr_result[] = $obj;
+            }
+
+            $rows = json_encode($arr_result);
+            $json = '{"success": true, "rows": '.$rows.'}';
+        }
+        else
+        {
+            $json = '{"success": false, "msg": "No result."}';
+        }
+
+        render_json($json);
+    }
+
+    public function get_other_total()
+    {
+        $s = $this->input->post('s');
+        $e = $this->input->post('e');
+
+        $s = to_mysql_date($s);
+        $e = to_mysql_date($e);
+
+        if(empty($s) || empty($e))
+        {
+
+            $total = $this->ampur->get_other_total($this->amp_code);
+        }
+        else
+        {
+
+            $total = $this->ampur->get_other_filter_total($this->amp_code, $s, $e);
+        }
+
+
+        $json = '{"success": true, "total": '.$total.'}';
         render_json($json);
     }
 }
