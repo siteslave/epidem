@@ -5,6 +5,9 @@ class Maps extends CI_Controller
     {
         parent::__construct();
 
+        if(!$this->session->userdata('username'))
+            redirect(site_url('users/login'));
+		
         $this->layout->setLayout('maps_layout');
 
         $this->load->model('Basic_model', 'basic');
