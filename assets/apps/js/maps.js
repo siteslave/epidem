@@ -60,8 +60,6 @@ function deleteOverlays() {
     mm.markers = [];
 }
 
-
-
 mm.ajax = {
     get_data: function (a, s, e, c, n, p, cb) {
         var url = '/maps/get_map',
@@ -73,7 +71,6 @@ mm.ajax = {
                 n: n,
                 p: p
             }
-
         app.ajax(url, params, function (err, data) {
             err ? cb(err) : cb(null, data);
         });
@@ -105,7 +102,7 @@ $(function(){
 
     //create map
     mm.map = new google.maps.Map(mapId, options);
-
+	mm.mc = new MarkerClusterer(mm.map);
     //mm.clearMarker();
     //mm.addMarker(mm.latLng);
 
@@ -117,9 +114,8 @@ $(function(){
     mm.set_map = function(d) {
 
         deleteOverlays();
-
-        var mc = new MarkerClusterer(mm.map);
-        mc.clearMarkers();
+        
+		mm.mc.setIgnoreHidden(true);
 
         mm.markers = [];
 
@@ -132,13 +128,7 @@ $(function(){
             }
         });
 
-        mc.addMarkers(mm.markers);
-
-        //var markerCluster = new MarkerClusterer(mm.map, mm.markers);
-
-        //markerCluster.clearMarkers();
-
-         //new MarkerClusterer(map, markers);
+        mm.mc.addMarkers(mm.markers);
     };
 
 /*
@@ -177,6 +167,13 @@ $(function(){
                 if(err) {
                     app.alert(err);
                 } else {
+					
+					$.each(mm.markers, function(k, v){
+					    v.setVisible(false);
+					});
+					
+					mm.mc.repaint();
+					
                     mm.set_map(data.rows);
                 }
             });
