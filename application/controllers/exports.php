@@ -197,7 +197,7 @@ class Exports extends CI_Controller {
         }
 
         $csv = $header . $data;
-		//ANSI = Windows-1252, so probably: $data = iconv("windows-1252","ASCII",$data);
+		$csv = iconv('UTF-8' , 'TIS-620' , $csv);
 		
 		$path = './exports/';
         $file_export = $path . 'EPIDEM-' . date('YmdHis') . '.txt';
