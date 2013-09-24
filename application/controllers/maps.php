@@ -13,7 +13,7 @@ class Maps extends CI_Controller
     }
 
     public function index()
-    {
+    { 
         $data['code506'] = $this->basic->get_code506_list();
         $data['nation']  = $this->basic->get_nation_list();
 
@@ -172,11 +172,6 @@ class Maps extends CI_Controller
     {
         $rs = $this->maps->get_person_detail($id);
 
-        /*
-         * $obj->address   = $r->address . ' ' . get_address($r->addrcode);
-                $obj->diag      = $r->icd10 . ' ' . $this->basic->get_diagname($r->icd10);
-                $obj->code506   = $r->disease . ' ' . $this->basic->get_code506name($r->disease);
-         */
         if($rs)
         {
             $data = array(
@@ -254,7 +249,7 @@ class Maps extends CI_Controller
                     $obj->hn            = $rs->hn;
                     $obj->mstatus       = $rs->marietal;
                     $obj->nation        = $rs->nation;
-                    $obj->nmepat       = $rs->nmepat;
+                    $obj->nmepat        = $rs->nmepat;
                     $obj->occupation    = $rs->occupat;
                     $obj->date_serv     = to_thai_date($rs->datesick);
                     $obj->ptstatus      = $rs->result;
@@ -279,7 +274,7 @@ class Maps extends CI_Controller
                     $obj->code506       = $rs->disease;
                     $obj->diagname      = $this->basic->get_diagname($rs->icd10);
                     $obj->diagcode      = $rs->icd10;
-                    $obj->office_id     =$rs->office_id;
+                    $obj->office_id     = $rs->office_id;
                     $obj->complication  = $rs->complica;
                     $obj->organism      = $rs->organism;
                     $obj->date_report   = to_thai_date($rs->datereach);
