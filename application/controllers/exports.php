@@ -197,7 +197,30 @@ class Exports extends CI_Controller {
         }
 
         $csv = $header . $data;
-        $file_export = 'EPIDEM-' . date('YmdHis') . '.txt';
-        force_download( $file_export, $csv);
+		//ANSI = Windows-1252, so probably: $data = iconv("windows-1252","ASCII",$data);
+		
+		$path = './exports/';
+        $file_export = $path . 'EPIDEM-' . date('YmdHis') . '.txt';
+		
+		if($open = fopen($file_export ,"w"))
+		{
+			fputs($open, $csv);
+			fclose($open);
+		
+			//load library
+			$this->load->library('zip');
+			//add file
+			$this->zip->read_file($file_export);
+			//new zip file
+			$zip_file = $path . 'EPIDEM-' . date('YmdHis') . '.zip';
+			//create zip file
+			$this->zip->archive($zip_file); 
+			//force download
+			$this->zip->download($zip_file);
+		}
+		else 
+		{
+			echo 'Can\'t not export file';
+		}
     }
 }
