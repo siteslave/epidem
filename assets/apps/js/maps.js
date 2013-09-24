@@ -29,11 +29,30 @@ if (navigator.geolocation) {
 
 };
 
-function addMarker(location) {
+function addMarker(location, v) {
     var marker = new google.maps.Marker({
         position: location,
         map: mm.map
     });
+	
+    google.maps.event.addListener(marker, 'click', function() {
+
+        var content = '<strong>ชื่อ:</strong> ' + v.name + ' <br /> ' +
+		'<strong>วันเกิด:</strong> ' + v.birth + ' <strong>อายุ:</strong> ' + v.age + ' ปี<br /> ' +
+		'<strong>สัญชาติ:</strong> ' + v.nation + '<br />' +  
+		'<strong>Disease: </strong> ' + v.code506 + '<br />' +
+		'<strong>Diag: </strong>' + v.diag;
+
+        var infoWindow = new google.maps.InfoWindow({
+            content: content
+        });
+
+        mm.map.setZoom(18);
+        mm.map.setCenter(location);
+
+        infoWindow.open(mm.map, marker);
+    });
+	
     mm.markers.push(marker);
 }
 
@@ -123,7 +142,7 @@ $(function(){
             if(v.lat && v.lng) {
                 var latLng = new google.maps.LatLng(v.lat, v.lng);
                 //var marker = new google.maps.Marker({'position': latLng});
-                addMarker(latLng);
+                addMarker(latLng, v);
                 //mm.markers.push(marker);
             }
         });

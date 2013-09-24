@@ -130,13 +130,16 @@ class Maps extends CI_Controller
 
                 foreach($rs as $r)
                 {
-                    $obj = new stdClass();
-                    $obj->name = $r->name;
-                    $obj->birth = to_thai_date($r->birth);
-                    $obj->age = count_age($r->birth);
-                    $obj->lat = empty($r->latitude) ? null : (float) $r->latitude;
-                    $obj->lng = empty($r->longtitude) ? null : (float) $r->longtitude;
-                    $obj->nation = get_nation_nhso_name($r->nation);
+                    $obj 			= new stdClass();
+                    $obj->name 		= $r->name;
+                    $obj->birth 	= to_thai_date($r->birth);
+                    $obj->age 		= count_age($r->birth);
+                    $obj->lat 		= empty($r->latitude) ? null : (float) $r->latitude;
+                    $obj->lng 		= empty($r->longtitude) ? null : (float) $r->longtitude;
+                    $obj->nation 	= get_nation_nhso_name($r->nation);
+	                $obj->diag      = $r->icd10 . ' ' . $this->basic->get_diagname($r->icd10);
+	                $obj->code506   = $r->disease . ' ' . $this->basic->get_code506name($r->disease);
+					
 
                     array_push($rows, $obj);
 
