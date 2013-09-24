@@ -139,6 +139,7 @@ class Maps extends CI_Controller
                     $obj->nation 	= get_nation_nhso_name($r->nation);
 	                $obj->diag      = $r->icd10 . ' ' . $this->basic->get_diagname($r->icd10);
 	                $obj->code506   = $r->disease . ' ' . $this->basic->get_code506name($r->disease);
+					$obj->ptstatus  = $r->result;
 					
 
                     array_push($rows, $obj);

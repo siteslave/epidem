@@ -37,11 +37,16 @@ function addMarker(location, v) {
 	
     google.maps.event.addListener(marker, 'click', function() {
 
+		var ptstatus = v.ptstatus == '1' ? 'หาย' : 
+			v.ptstatus == '2' ? '<span style="color: red;">เสียชีวิต </span>' : 
+			v.ptstatus == '3' ? 'ยังรักษาอยู่' : 'ไม่ทราบ';
+						
         var content = '<strong>ชื่อ:</strong> ' + v.name + ' <br /> ' +
 		'<strong>วันเกิด:</strong> ' + v.birth + ' <strong>อายุ:</strong> ' + v.age + ' ปี<br /> ' +
 		'<strong>สัญชาติ:</strong> ' + v.nation + '<br />' +  
 		'<strong>Disease: </strong> ' + v.code506 + '<br />' +
-		'<strong>Diag: </strong>' + v.diag;
+		'<strong>Diag: </strong>' + v.diag + '<br />' + 
+		'<strong>สถานะ: </strong>' + ptstatus;
 
         var infoWindow = new google.maps.InfoWindow({
             content: content
