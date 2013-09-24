@@ -212,9 +212,14 @@ $(function () {
 
                 var ptstatus = v.ptstatus == '1' ? 'หาย' : v.ptstatus == '2' ? 'เสียชีวิต' : v.ptstatus == '3' ? 'ยังรักษาอยู่' : v.ptstatus== '9' ? 'ไม่ทราบ' : '-';
                 var tr_death = v.ptstatus == '2' ? 'class="danger"' : '';
-
-                $('#tbl_list > tbody').append(
+				var latlng = v.latlng == '1' ? 
+				'<a href="javascript:void(0);" class="btn btn-default" data-name="btn_get_map" title="ดูแผนที่" data-rel="tooltip" ' +
+				'data-id="' + v.id + '"><i class="glyphicon glyphicon-new-window"></i> </a>' : 
+				'';
+                
+				$('#tbl_list > tbody').append(
                     '<tr '+tr_death+'">' +
+                        '<td>' + latlng + '</td>' +
                         '<td>' + v.e0 + '</td>' +
                         '<td>' + v.e1 + '</td>' +
                         '<td>' + v.datesick + '</td>' +
@@ -235,11 +240,11 @@ $(function () {
                         '<i class="glyphicon glyphicon-edit"></i> ดูข้อมูล' +
                         '</a>' +
                         '</li>' +
-                        '<li>' +
+                        /*'<li>' +
                         '<a href="javascript:void(0);" data-id="'+ v.id +'" data-name="btn_get_map"> ' +
                         '<i class="glyphicon glyphicon-log-out"></i> ดูแผนที่' +
                         '</a>' +
-                        '</li>' +
+                        '</li>' + */
                         '<li>' +
                         '<a href="javascript:void(0);" data-id="'+ v.id +'" data-name="btn_set_map"> ' +
                         '<i class="glyphicon glyphicon-map-marker"></i> แก้ไขพิกัด' +
@@ -254,7 +259,7 @@ $(function () {
             app.set_runtime();
         }
         else {
-            $('#tbl_list > tbody').append('<tr><td colspan="11">ไม่พบรายการ</td></tr>');
+            $('#tbl_list > tbody').append('<tr><td colspan="12">ไม่พบรายการ</td></tr>');
         }
     };
 
@@ -266,8 +271,14 @@ $(function () {
                 var ptstatus = v.ptstatus == '1' ? 'หาย' : v.ptstatus == '2' ? 'เสียชีวิต' : v.ptstatus == '3' ? 'ยังรักษาอยู่' : v.ptstatus== '9' ? 'ไม่ทราบ' : '-';
                 var tr_death = v.ptstatus == '2' ? 'class="danger"' : '';
 
+				var latlng = v.latlng == '1' ? 
+				'<a href="javascript:void(0);" class="btn btn-default" data-name="btn_get_map" title="ดูแผนที่" data-rel="tooltip" ' +
+				'data-id="' + v.id + '"><i class="glyphicon glyphicon-new-window"></i> </a>' : 
+				'';
+				
                 $('#tbl_other_list > tbody').append(
                     '<tr '+tr_death+'">' +
+                        '<td>' + latlng + '</td>' +
                         '<td>' + v.e0 + '</td>' +
                         '<td>' + v.e1 + '</td>' +
                         '<td>' + v.datesick + '</td>' +
@@ -288,10 +299,10 @@ $(function () {
                         '<i class="glyphicon glyphicon-edit"></i> ดูข้อมูล' +
                         '</a>' +
                         '</li>' +
-                        '<li>' +
+                        /*'<li>' +
                         '<a href="javascript:void(0);" data-id="'+ v.id +'" data-name="btn_get_map"> ' +
                         '<i class="glyphicon glyphicon-log-out"></i> ดูแผนที่' +
-                        '</a>' +
+                        '</a>' +*/
                         '<li>' +
                         '<a href="javascript:void(0);" data-id="'+ v.id +'" data-name="btn_set_map"> ' +
                         '<i class="glyphicon glyphicon-map-marker"></i> แก้ไขพิกัด' +
@@ -306,7 +317,7 @@ $(function () {
             app.set_runtime();
         }
         else {
-            $('#tbl_other_list > tbody').append('<tr><td colspan="11">ไม่พบรายการ</td></tr>');
+            $('#tbl_other_list > tbody').append('<tr><td colspan="12">ไม่พบรายการ</td></tr>');
         }
     };
 
@@ -319,7 +330,7 @@ $(function () {
         ampur.ajax.get_other_total(start_date, end_date, function (err, data) {
             if (err) {
                 app.alert(err);
-                $('#tbl_other_list > tbody').append('<tr><td colspan="11">ไม่พบรายการ</td></tr>');
+                $('#tbl_other_list > tbody').append('<tr><td colspan="12">ไม่พบรายการ</td></tr>');
             } else {
                 $('#spn_other').html(app.add_commars_with_out_decimal(data.total));
                 $('#other_paging').paging(data.total, {
@@ -332,7 +343,7 @@ $(function () {
                         ampur.ajax.get_other_list(start_date, end_date, this.slice[0], this.slice[1], function (err, data) {
                             if (err) {
                                 app.alert(err);
-                                $('#tbl_other_list > tbody').append('<tr><td colspan="11">ไม่พบรายการ</td></tr>');
+                                $('#tbl_other_list > tbody').append('<tr><td colspan="12">ไม่พบรายการ</td></tr>');
                             } else {
                                 ampur.set_other_list(data);
                             }

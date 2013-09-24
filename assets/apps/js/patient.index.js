@@ -238,8 +238,14 @@ $(function () {
                 var ptstatus = v.ptstatus == '1' ? 'หาย' : v.ptstatus == '2' ? 'เสียชีวิต' : v.ptstatus == '3' ? 'ยังรักษาอยู่' : v.ptstatus == '9' ? 'ไม่ทราบ' : '-';
                 var tr_death = v.ptstatus == '2' ? 'class="danger"' : '';
 
+				var latlng = v.latlng == '1' ? 
+				'<a href="javascript:void(0);" class="btn btn-default" data-name="btn_get_map" title="ดูแผนที่" data-rel="tooltip" ' +
+				'data-id="' + v.id + '"><i class="glyphicon glyphicon-new-window"></i> </a>' : 
+				'';
+				
                 $('#tbl_list > tbody').append(
                     '<tr ' + tr_death + '>' +
+                        '<td>' + latlng + '</td>' +
                         '<td>' + v.e0 + '</td>' +
                         '<td>' + v.e1 + '</td>' +
                         //'<td>' + v.pe0 + '</td>' +
@@ -274,7 +280,7 @@ $(function () {
             });
         }
         else {
-            $('#tbl_list > tbody').append('<tr><td colspan="10">ไม่พบรายการ</td></tr>');
+            $('#tbl_list > tbody').append('<tr><td colspan="11">ไม่พบรายการ</td></tr>');
         }
     };
 
@@ -287,7 +293,7 @@ $(function () {
         patient.ajax.get_list_total(start_date, end_date, ptstatus, nation, function (err, data) {
             if (err) {
                 app.alert(err);
-                $('#tbl_list > tbody').append('<tr><td colspan="10">ไม่พบรายการ</td></tr>');
+                $('#tbl_list > tbody').append('<tr><td colspan="11">ไม่พบรายการ</td></tr>');
             } else {
                 $('#spn_total').html(app.add_commars_with_out_decimal(data.total));
                 $('#main_paging').paging(data.total, {
@@ -300,7 +306,7 @@ $(function () {
                         patient.ajax.get_list(start_date, end_date, ptstatus, nation, this.slice[0], this.slice[1], function (err, data) {
                             if (err) {
                                 app.alert(err);
-                                $('#tbl_list > tbody').append('<tr><td colspan="10">ไม่พบรายการ</td></tr>');
+                                $('#tbl_list > tbody').append('<tr><td colspan="11">ไม่พบรายการ</td></tr>');
                             } else {
                                 patient.set_list(data);
                             }
@@ -1203,6 +1209,11 @@ $(function () {
         app.go_to_url('/maps/set_map/' + id);
     });
 
+    $(document).on('click', 'a[data-name="btn_get_map"]', function(e) {
+        e.preventDefault();
+        var id = $(this).data('id');
+        app.go_to_url('/maps/show_map/' + id);
+    });
 
     //get e0 list
     patient.get_list();

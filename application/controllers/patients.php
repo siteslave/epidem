@@ -136,6 +136,8 @@ class Patients extends CI_Controller
                 $obj->nation    = get_nation_nhso_name($r->nation);
                 $obj->ptstatus  = $r->result;
 
+				$obj->latlng 	= !empty($r->latitude) && !empty($r->longtitude) ? '1' : '0';
+
                 $arr_result[] = $obj;
             }
 

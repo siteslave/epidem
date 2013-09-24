@@ -177,6 +177,8 @@ class Ampur extends CI_Controller
                 $obj->ptstatus  = $r->result;
                 $obj->hospcode  = $r->hospcode;
                 $obj->hospname  = get_hospital_name($r->hospcode);
+				
+				$obj->latlng 	= !empty($r->latitude) && !empty($r->longtitude) ? '1' : '0';
 
                 $arr_result[] = $obj;
             }
@@ -563,6 +565,8 @@ class Ampur extends CI_Controller
                 $obj->ptstatus  = $r->result;
                 $obj->hospcode  = $r->hospcode;
                 $obj->hospname  = get_hospital_name($r->hospcode);
+
+				$obj->latlng 	= !empty($r->latitude) && !empty($r->longtitude) ? '1' : '0';
 
                 $arr_result[] = $obj;
             }

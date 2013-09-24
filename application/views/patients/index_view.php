@@ -63,6 +63,7 @@
         <table class="table table-striped" id="tbl_list">
             <thead>
             <tr>
+				<th></th>
                 <th>E0</th>
                 <th>E1</th>
                 <th>HN</th>
@@ -75,7 +76,11 @@
                 <th></th>
             </tr>
             </thead>
-            <tbody></tbody>
+            <tbody>
+            	<tr>
+            		<td colspan="11">ระบุเงื่อนไข</td>
+            	</tr>
+            </tbody>
         </table>
 
         <ul class="pagination" id="main_paging"></ul>

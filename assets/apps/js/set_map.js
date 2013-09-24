@@ -34,9 +34,9 @@ mm.clearMarker = function() {
 mm.addMarker = function(latLng) {
     mm.marker = new google.maps.Marker({
         position: latLng,
-        map: mm.map,
+        map: mm.map
         //icon: mm.iconBase + 'offices/apartment-3.png',
-        title: 'คุณอยู่ที่นี่'
+        //title: 'คุณอยู่ที่นี่'
     });
 };
 

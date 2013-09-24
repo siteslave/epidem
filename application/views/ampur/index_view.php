@@ -63,6 +63,7 @@
         <table class="table table-striped" id="tbl_list">
             <thead>
             <tr>
+				<th></th>
                 <th>E0</th>
                 <th>E1</th>
                 <th>วันที่ป่วย</th>
@@ -78,7 +79,7 @@
             </thead>
             <tbody>
             <tr>
-                <td colspan="11">...</td>
+                <td colspan="12">...</td>
             </tr>
             </tbody>
         </table>
@@ -185,6 +186,7 @@
         <table class="table table-striped" id="tbl_other_list">
             <thead>
             <tr>
+				<th></th>
                 <th>E0</th>
                 <th>E1</th>
                 <th>วันที่ป่วย</th>
@@ -200,7 +202,7 @@
             </thead>
             <tbody>
             <tr>
-                <td colspan="11">...</td>
+                <td colspan="12">...</td>
             </tr>
             </tbody>
         </table>
