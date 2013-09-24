@@ -1,4 +1,12 @@
-<?php
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+/**
+ * Maps model
+ *
+ * @author  Mr.Satit Rianpit <rianpit@yahoo.com>
+ * @copyright   MKHO <http://mkho.moph.go.th>
+ *
+ */
+
 class Maps extends CI_Controller
 {
     public function __construct()
